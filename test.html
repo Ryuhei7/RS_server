@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script type="text/javascript">
+
+function check(){
+    // var font=$("#size").value;
+    obj = document.selSize.size;
+    index = obj.selectedIndex;
+    font=obj.options[index].value;
+    $('#changeFont').css('font-size',font);
+
+}
+
+</script>
+
+<form name="selSize" style="height:60px;">
+    <select id="size" name="size" onChange="check()">
+        <option value="10px">10px</option>
+        <option value="20px">20px</option>
+        <option value="30px">30px</option>
+        <option value="40px">40px</option>
+        <option value="50px">50px</option>
+        <option value="60px">60px</option>
+    </select>
+</form>
+    <div id="changeFont">
+        test
+    </div>
+</body>
+</html>

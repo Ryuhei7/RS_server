@@ -1,25 +1,14 @@
 {
-  "name": "test",
-  "version": "0.0.1",
+  "name": "recodemo",
+  "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "test"
+    "start": "node server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Ryuhei7/RS_server.git"
-  },
-  "keywords": [
-    "ryuhei"
-  ],
-  "author": "ryuhei",
-  "license": "ryuhei",
-  "bugs": {
-    "url": "https://github.com/Ryuhei7/RS_server/issues"
-  },
-  "homepage": "https://github.com/Ryuhei7/RS_server",
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "express": "^4.14.0"
+    "socket.io": "^1.4.8"
   }
 }
