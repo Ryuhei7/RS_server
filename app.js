@@ -39,6 +39,7 @@ console.log("コネクション確立");
 //データベースに接続 
  pg.connect(connect_db, function(err, client){
  console.log("DB接続");
+
   // クライアントからサーバーへ メッセージ送信ハンドラ（自分を含む全員宛に送る）
   //Socket.IO Test
   socket.on( 'test', function( data ) {
@@ -69,15 +70,16 @@ console.log("コネクション確立");
   //ShareTableList に新しくテーブルを追加
   socket.on( 'sharetable_start', function( data ) {
   //data = data + '\n';
+  console.log("recieved");
  
-  var insert_share = "insert into events(shop_id, table_id, title, category_id, explain, h_user_id, end_time) values (0,0,'test',0,'test',0,'0:00');"
- 
+  var insert_share = "insert into events(share_id,shop_id, table_id, title, category_id, explain, h_user_id, end_time) values ("+nextval('events_share_id_seq')+",0,0,'test',0,'test',0,'0:00');"
+ cliet.query(insert_share);
  console.log(insert_share);//SQL文をコンソールに表示  
-
+}
   socket.on( 'sharetable_start', function( source ) {
     data = source.title + "," + source.category + "," + source.endtime + "," + source.explain + "," + source.shopid + "," + source.tableid + "," + source.userid + '\n';
 
-  client.query(insert_share);//DBへshareデータを格納
+  
 
    
     // /csv/ShopList.csv に保存
@@ -159,7 +161,8 @@ console.log("コネクション確立");
 
     //console.log();
      });
-    }); 
+
+    
   });
 });
 
