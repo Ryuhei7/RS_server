@@ -73,14 +73,12 @@ console.log("コネクション確立");
   console.log("recieved");
  
   var insert_share = "insert into events(share_id,shop_id, table_id, title, category_id, explain, h_user_id, end_time) values ("+nextval('events_share_id_seq')+",0,0,'test',0,'test',0,'0:00');"
- cliet.query(insert_share);
- console.log(insert_share);//SQL文をコンソールに表示  
-}
+    cliet.query(insert_share);
+    console.log(insert_share);//SQL文をコンソールに表示  
+  });
+
   socket.on( 'sharetable_start', function( source ) {
     data = source.title + "," + source.category + "," + source.endtime + "," + source.explain + "," + source.shopid + "," + source.tableid + "," + source.userid + '\n';
-
-  
-
    
     // /csv/ShopList.csv に保存
     fs.appendFile(__dirname + "/csv/ShareTableList.csv", data , 'utf-8', function(err){
@@ -91,7 +89,6 @@ console.log("コネクション確立");
       //見つかったらcompleteを返す
       io.sockets.emit( 'sharetable_start_res', "complete" );
     });
-
     console.log(data);
   });
 
