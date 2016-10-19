@@ -50,7 +50,7 @@ $("form").submit(function(e){
   var shareendtime = $("#shareendtime").val();
   var remark = $("#remark").val();
   var message = sharetitle + "," + category + "," + shareendtime + "," + remark;
-
+  var    
   // "qrcodemaker"というイベントに message という変数を送信
   socket.emit("sharetable_start", message);
 
