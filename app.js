@@ -49,9 +49,8 @@ io.sockets.on( 'connection', function( socket ) {
   });
 
   //QRCode Maker
-  socket.on( 'qrcodemaker', function( data ) {
-    data = data + '\n';
-
+  socket.on( 'qrcodemaker', function( source ) {
+    data = source.shopid + "," + source.tableid + '\n';
     // /csv/ShopList.csv に保存
     fs.appendFile(__dirname + "/csv/ShopList.csv", data , 'utf-8', function(err){
       //もし見つからなかったらエラーを返す
@@ -67,11 +66,16 @@ io.sockets.on( 'connection', function( socket ) {
 
   //ShareTable List
   //ShareTableList に新しくテーブルを追加
+<<<<<<< HEAD
   socket.on( 'sharetable_start', function( data ) {
     //data = data + '\n';
  
   var insert_share = "insert into events(shop_id, table_id, title, category_id, explain, h_user_id, end_time) values ("+data.shopid+","+data.tableid+",'"+data.title+"',"+data.category_id+",'"+data.explain+"',"+data.h_user_id+",'"+data.endtime+"');"
   console.log(insert_share);//SQL文をコンソールに表示  
+=======
+  socket.on( 'sharetable_start', function( source ) {
+    data = source.title + "," + source.category + "," + source.endtime + "," + source.explain + "," + source.shopid + "," + source.tableid + "," + source.userid + '\n';
+>>>>>>> 773242e4c8d20ec748ae25c571c9cb87da66a811
 
   client.query(insert_share);//DBへshareデータを格納
 
@@ -89,6 +93,34 @@ io.sockets.on( 'connection', function( socket ) {
     console.log(data);
   });
 
+  //ShareTableList の一覧を出力
+  socket.on( 'sharetable_list', function() {
+    // /csv/ShareTableList.csv を読みに行く
+    fs.readFile(__dirname + "/csv/ShareTableList.csv", 'utf-8', function(err,source){
+    //もし見つからなかったらエラーを返す
+      if(err){
+        io.sockets.emit( 'sharetable_list_res', "error" );
+      }
+      var yenN = source.split('\n');
+      var data = new Array();   //dataを配列として宣言
+      for(var i=0;i<yenN.length-1;i++){
+        var tmp = yenN[i].split(",");
+        data[i] = new Object();
+        data[i].title = tmp[0];
+        data[i].category = tmp[1];
+        data[i].endtime = tmp[2];
+        data[i].explain = tmp[3];
+        data[i].shopid = tmp[4];
+        data[i].tableid = tmp[5];
+        data[i].userid = tmp[6];
+      }
+
+    //見つかったらcompleteを返す
+      io.sockets.emit( 'sharetable_list_res', "complete" );
+      io.sockets.emit( 'sharetable_list_back', data );
+    });
+  });
+
   //ShareTableList にテーブルのシェアを終了したことを記録
   socket.on( 'sharetable_end', function( data ) {
     data = data + '\n';
@@ -102,8 +134,6 @@ io.sockets.on( 'connection', function( socket ) {
       //見つかったらcompleteを返す
       io.sockets.emit( 'sharetable_end_res', "complete" );
     });
-
-    console.log(data);
   });
 
   //Category List
@@ -119,12 +149,15 @@ io.sockets.on( 'connection', function( socket ) {
       //見つかったらcompleteを返す
       //var yenN = source.split('\n');
       var resultString = source.split(",");
+      //var listnum = resultString.length-1;
 
       io.sockets.emit( 'categorylist_res', "complete" );
       io.sockets.emit( 'categorylist_back' , resultString);
+
+      //console.log(listnum);
     });
 
-    //console.log(data);
+    //console.log();
 
     }); 
   });

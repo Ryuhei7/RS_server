@@ -11,21 +11,22 @@
   </head>
   <body>
     <div class="container">
-      <h3><a href="index.html"><|戻る</a></h3>
+      <h3><a href="index.html"><|戻る</a>　　　<a href="csv/ShopList.csv">登録されているリストを見る|></a></h3>
       <h1>QRCode Maker</h1>
       <form class="form-inline">
         <div class="form-group">
-          <label for="shopname">店舗名：</label>
-          <input type="text" class="form-control" id="shopname">
+          <label for="shopid">店舗ID：</label>
+          <input type="text" class="form-control" id="shopid">
           <br>
-          <label for="tablenum">テーブル番号：</label>
-          <input type="text" class="form-control" id="tablenum">
+          <label for="tableid">テーブルID：</label>
+          <input type="text" class="form-control" id="tableid">
           <br>
         </div><br>
         <button type="submit" class="btn btn-primary">送信</button>
       </form>
       <br>
       <div id="qrres"></div>
+      <br>
       <div id="qrimg"></div>
       <br>
     </div>
@@ -33,8 +34,7 @@
 //ソケット通信の準備
 var socket = io.connect();
 
-
-socket.on("qrcodemaker_back", function(data){
+socket.on("qrcodemaker_res", function(data){
   $("#qrres").html("");
   $("#qrres").html(data);
 });
@@ -42,16 +42,17 @@ socket.on("qrcodemaker_back", function(data){
 //サーバにデータを送る関数
 $("form").submit(function(e){
   //入力フィールドの内容を変数に代入
-  var shopname = $("#shopname").val();
-  var tablenum = $("#tablenum").val();
+  var message = new Object();
+  message.shopid = $("#shopid").val();
+  message.tableid = $("#tableid").val();
 
-  var message = shopname + "," + tablenum;
+  var qrtmp = message.shopid + "," + message.tableid;
 
   // "qrcodemaker"というイベントに message という変数を送信
   socket.emit("qrcodemaker", message);
 
   $("#qrimg").html("");
-  $("#qrimg").qrcode(message);
+  $("#qrimg").qrcode(qrtmp);
 
   //この関数の中断
   e.preventDefault();

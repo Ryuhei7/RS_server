@@ -11,21 +11,21 @@
   </head>
   <body>
     <div class="container">
-      <h3><a href="index.html"><|戻る</a></h3>
+      <h3><a href="index.html"><|戻る</a>　　　<a href="sharetable-list-output.html">登録されているリストを見る|></a></h3>
       <h1>ShareTable List</h1>
       <form class="form-inline">
         <div class="form-group">
           <label for="">シェアタイトル：</label>
-          <input type="text" class="form-control" id="sharetitle">
+          <input type="text" class="form-control" id="title">
           <br>
           <label for="tablenum">カテゴリー：</label>
           <input type="text" class="form-control" id="category">
           <br>
           <label for="tablenum">シェア終了時刻：</label>
-          <input type="text" class="form-control" id="shareendtime">
+          <input type="text" class="form-control" id="endtime">
           <br>
           <label for="tablenum">備考：</label>
-          <input type="text" class="form-control" id="remark">
+          <input type="text" class="form-control" id="explain">
           <br>
         </div><br>
         <button type="submit" class="btn btn-primary">送信</button>
@@ -38,13 +38,14 @@
 var socket = io.connect();
 
 
-socket.on("qrcodemaker_back", function(data){
-  $("#qrres").html(data);
+socket.on("sharetable_start_back", function(data){
+  $("#res").html(data);
 });
 
 //サーバにデータを送る関数
 $("form").submit(function(e){
   //入力フィールドの内容を変数に代入
+<<<<<<< HEAD:sharetable-list.html
   var sharetitle = $("#sharetitle").val();
   var category = $("#category").val();
   var shareendtime = $("#shareendtime").val();
@@ -52,6 +53,19 @@ $("form").submit(function(e){
   var message = sharetitle + "," + category + "," + shareendtime + "," + remark;
   var    
   // "qrcodemaker"というイベントに message という変数を送信
+=======
+  var message = new Object();
+  message.title = $("#title").val();
+  message.category = $("#category").val();
+  message.endtime = $("#endtime").val();
+  message.explain = $("#explain").val();
+  message.shopid = 1;
+  message.tableid = 1;
+  message.userid = 1;
+  //sharetitle + "," + category + "," + shareendtime + "," + remark;
+
+  // "sharetable_start"というイベントに message という変数を送信
+>>>>>>> 773242e4c8d20ec748ae25c571c9cb87da66a811:sharetable-list-add.html
   socket.emit("sharetable_start", message);
 
   //この関数の中断
