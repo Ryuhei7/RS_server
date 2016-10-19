@@ -35,10 +35,10 @@ var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-16
 
 // 接続確立後の通信処理部分を定義
 io.sockets.on( 'connection', function( socket ) {
-
+console.log("コネクション確立");
 //データベースに接続 
  pg.connect(connect_db, function(err, client){
-
+ console.log("DB接続");
   // クライアントからサーバーへ メッセージ送信ハンドラ（自分を含む全員宛に送る）
   //Socket.IO Test
   socket.on( 'test', function( data ) {
