@@ -65,10 +65,11 @@ console.log("connect server");
     console.log(data);
   });
 
-/*
+
   //ShareTable List
   //ShareTableList に新しくテーブルを追加
-  socket.on( 'sharetable_start', function( data ) {
+/*  
+socket.on( 'sharetable_start', function( data ) {
   console.log("recieved");
  
   var insert_share = "insert into events(share_id,shop_id, table_id, title, category_id, explain, h_user_id, end_time) values ("+nextval('events_share_id_seq')+",0,0,'test',0,'test',0,'0:00');"
@@ -77,8 +78,12 @@ console.log("connect server");
   });
 */
   socket.on( 'sharetable_start', function( source ) {
+    console.log("recieved sharetable_start");
     data = source.title + "," + source.category + "," + source.endtime + "," + source.explain + "," + source.shopid + "," + source.tableid + "," + source.userid + '\n';
    
+    var insert_share = "insert into events(share_id,shop_id, table_id, title, category_id    , explain, h_user_id, end_time) values ("+nextval('events_share_id_seq')+",0,0,'test',0    ,'test',0,'0:00');
+    console.log(insert_share);
+
     // /csv/ShopList.csv に保存
     fs.appendFile(__dirname + "/csv/ShareTableList.csv", data , 'utf-8', function(err){
       //もし見つからなかったらエラーを返す
