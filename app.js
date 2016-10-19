@@ -64,18 +64,18 @@ io.sockets.on( 'connection', function( socket ) {
     console.log(data);
   });
 
+
   //ShareTable List
   //ShareTableList に新しくテーブルを追加
-<<<<<<< HEAD
   socket.on( 'sharetable_start', function( data ) {
-    //data = data + '\n';
+  //data = data + '\n';
  
   var insert_share = "insert into events(shop_id, table_id, title, category_id, explain, h_user_id, end_time) values ("+data.shopid+","+data.tableid+",'"+data.title+"',"+data.category_id+",'"+data.explain+"',"+data.h_user_id+",'"+data.endtime+"');"
-  console.log(insert_share);//SQL文をコンソールに表示  
-=======
+ 
+ console.log(insert_share);//SQL文をコンソールに表示  
+
   socket.on( 'sharetable_start', function( source ) {
     data = source.title + "," + source.category + "," + source.endtime + "," + source.explain + "," + source.shopid + "," + source.tableid + "," + source.userid + '\n';
->>>>>>> 773242e4c8d20ec748ae25c571c9cb87da66a811
 
   client.query(insert_share);//DBへshareデータを格納
 
@@ -158,10 +158,11 @@ io.sockets.on( 'connection', function( socket ) {
     });
 
     //console.log();
-
+     });
     }); 
   });
 });
+
 /*
 // クライアントからサーバーへ メッセージ送信ハンドラ（自分以外の全員宛に送る）
     socket.on( 'c2s_broadcast', function( data ) {
