@@ -81,7 +81,7 @@ socket.on( 'sharetable_start', function( data ) {
     console.log("recieved sharetable_start");
     data = source.title + "," + source.category + "," + source.endtime + "," + source.explain + "," + source.shopid + "," + source.tableid + "," + source.userid + '\n';
    
-    var insert_share = "insert into events(share_id,shop_id, table_id, title, category_id    , explain, h_user_id, end_time) values ("+nextval('events_share_id_seq')+",0,0,'test',0    ,'test',0,'0:00');
+    var insert_share = "insert into events(share_id, shop_id, table_id, title, category_id, explain, h_user_id, end_time) values ("+nextval('events_share_id_seq')+",0,0,'test',0,'test',0,'0:00');"
     console.log(insert_share);
 
     // /csv/ShopList.csv に保存
