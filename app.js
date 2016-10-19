@@ -70,7 +70,7 @@ io.sockets.on( 'connection', function( socket ) {
   socket.on( 'sharetable_start', function( data ) {
   //data = data + '\n';
  
-  var insert_share = "insert into events(shop_id, table_id, title, category_id, explain, h_user_id, end_time) values ("+data.shopid+","+data.tableid+",'"+data.title+"',"+data.category_id+",'"+data.explain+"',"+data.h_user_id+",'"+data.endtime+"');"
+  var insert_share = "insert into events(shop_id, table_id, title, category_id, explain, h_user_id, end_time) values (0,0,'test',0,'test',0,'0:00');"
  
  console.log(insert_share);//SQL文をコンソールに表示  
 
