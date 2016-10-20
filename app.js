@@ -83,7 +83,7 @@ data = source.title + "," + source.category + "," + source.endtime + "," + sourc
    { 
        console.log(get_max);
        console.log(max);
-       var  share_max = max.rows[1];
+       var  share_max = max.rows.length+1;
        console.log(share_max); 
 
     var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time) values ("+ share_max +",0,0,'test',0,'test',0,'0:00');"
