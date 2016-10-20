@@ -36,11 +36,13 @@ var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-16
 // 接続確立後の通信処理部分を定義
 io.sockets.on( 'connection', function( socket ) {
 console.log("connect server");
+
 //データベースに接続 
  pg.connect(connect_db, function(err, client){
  console.log("connect db");
 
   // クライアントからサーバーへ メッセージ送信ハンドラ（自分を含む全員宛に送る）
+
   //Socket.IO Test
   socket.on( 'test', function( data ) {
     // サーバーからクライアントへ メッセージを送り返し
@@ -48,9 +50,9 @@ console.log("connect server");
     //console.log(datta.value);
     console.log(data);
     var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time) values (0,0,0,'test',0,'test',0,'0:00');"
-  client.query(insert_share);
-  console.log(insert_share);//SQL文をコンソールに表示
-  });
+    client.query(insert_share);
+    console.log(insert_share);//SQL文をコンソールに表示
+    });
 
   //QRCode Maker
   socket.on( 'qrcodemaker', function( source ) {
@@ -64,29 +66,23 @@ console.log("connect server");
       //見つかったらcompleteを返す
       io.sockets.emit( 'qrcodemaker_res', "complete" );
     });
-
     console.log(data);
   });
 
 
   //ShareTable List
   //ShareTableList に新しくテーブルを追加
-/*  
-socket.on( 'sharetable_start', function( data ) {
-  console.log("recieved");
- 
-  var insert_share = "insert into events(share_id,shop_id, table_id, title, category_id, explain, h_user_id, end_time) values ("+nextval('events_share_id_seq')+",0,0,'test',0,'test',0,'0:00');"
-    cliet.query(insert_share);
-    console.log(insert_share);//SQL文をコンソールに表示  
-  });
-*/
   socket.on( 'sharetable_start', function( source ) {
     console.log("recieved sharetable_start");
-    data = source.title + "," + source.category + "," + source.endtime + "," + source.explain + "," + source.shopid + "," + source.tableid + "," + source.userid + '\n';
+    
+data = source.title + "," + source.category + "," + source.endtime + "," + source.explain + "," + source.shopid + "," + source.tableid + "," + source.userid + '\n';
    
     var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time) values (0,0,0,'test',0,'test',0,'0:00');"
     console.log(insert_share);
+    io.sockets.emit('sharetable_start_back', "complete");
+});
 
+/*
     // /csv/ShopList.csv に保存
     fs.appendFile(__dirname + "/csv/ShareTableList.csv", data , 'utf-8', function(err){
       //もし見つからなかったらエラーを返す
@@ -98,6 +94,8 @@ socket.on( 'sharetable_start', function( data ) {
     });
     console.log(data);
   });
+*/
+
 
   //ShareTableList の一覧を出力
   socket.on( 'sharetable_list', function() {

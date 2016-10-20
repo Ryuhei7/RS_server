@@ -43,14 +43,7 @@ socket.on("sharetable_start_back", function(data){
 });
 
 //サーバにデータを送る関数
-$("form").submit(function(e){
-  //入力フィールドの内容を変数に代入
-  var sharetitle = $("#sharetitle").val();
-  var category = $("#category").val();
-  var shareendtime = $("#shareendtime").val();
-  var remark = $("#remark").val();
-  var message = sharetitle + "," + category + "," + shareendtime + "," + remark;
-  var    
+$("form").submit(function(e){    
   // "qrcodemaker"というイベントに message という変数を送信
   var message = new Object();
   message.title = $("#title").val();
@@ -60,7 +53,6 @@ $("form").submit(function(e){
   message.shopid = 1;
   message.tableid = 1;
   message.userid = 1;
-  //sharetitle + "," + category + "," + shareendtime + "," + remark;
 
   // "sharetable_start"というイベントに message という変数を送信
   socket.emit("sharetable_start", message);
