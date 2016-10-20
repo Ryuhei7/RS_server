@@ -77,7 +77,7 @@ console.log("connect server");
     
 data = source.title + "," + source.category + "," + source.endtime + "," + source.explain + "," + source.shopid + "," + source.tableid + "," + source.userid + '\n';
    
-    var get_max = "select max(share_id) from events;"    
+    var get_max = "select share_id from events;"    
 
     client.query(get_max, function(err,max)
    { 
