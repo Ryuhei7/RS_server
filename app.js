@@ -77,8 +77,16 @@ console.log("connect server");
     
 data = source.title + "," + source.category + "," + source.endtime + "," + source.explain + "," + source.shopid + "," + source.tableid + "," + source.userid + '\n';
    
-    var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time) values (00,0,0,'test',0,'test',0,'0:00');"
+    var get_max = "select max(share_id) from events;"    
+   
+    client.query(get_max, function(err,max)
+     {
+       var share_max = max;
+     });
+
+    var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time) values ("+share_max+",0,0,'test',0,'test',0,'0:00');"
     console.log(insert_share);
+    client.query(insert_share);
     io.sockets.emit('sharetable_start_back', "complete");
 });
 
