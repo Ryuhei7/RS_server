@@ -80,7 +80,9 @@ data = source.title + "," + source.category + "," + source.endtime + "," + sourc
     var get_max = "select max(share_id) from events;"    
    
     client.query(get_max, function(err,max)
-     {
+     { 
+       console.log(get_max);
+       console.log(max);
        var share_max = max;
      });
 
