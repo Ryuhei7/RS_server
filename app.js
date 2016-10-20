@@ -48,7 +48,7 @@ console.log("connect server");
     //console.log(datta.value);
     console.log(data);
     var insert_share = "insert into events(share_id,shop_id, table_id, title, category_id, explain, h_user_i    d, end_time) values (0,0,0,'test',0,'test',0,'0:00');"
-  cliet.query(insert_share);
+  client.query(insert_share);
   console.log(insert_share);//SQL文をコンソールに表示
   });
 
