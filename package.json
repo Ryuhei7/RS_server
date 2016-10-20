@@ -1,14 +1,21 @@
 {
-  "name": "rs",
+  "name": "RS_server",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "author": "",
-  "license": "ISC",
+  "main": "index.js",
   "dependencies": {
-    "socket.io": "^1.4.8"
-  }
+    "express": "^4.14.0",
+    "express-generator": "^4.13.4"
+ },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "author": "nanaumi",
+  "license": "nanaumi",
+  "dependencies": {
+   "socket.io": "^1.4.8",
+  "pg":"latest",
+  "ejs":"*"
+ }
 }
