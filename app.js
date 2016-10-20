@@ -82,7 +82,7 @@ data = source.title + "," + source.category + "," + source.endtime + "," + sourc
     client.query(get_max, function(err,max)
    { 
        console.log(get_max);
-       console.log(max)
+       console.log(max);
        var  share_max = max.rows[1];
        console.log(share_max); 
 
