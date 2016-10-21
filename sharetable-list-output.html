@@ -15,6 +15,7 @@
       <h1>ShareTable List</h1>
       <button id="Reception" class="btn btn-primary">受信</button>
       <br>
+      <button id="get_detail" class="btn btn-primary">詳細</button>
       <div id="res"></div>
       <br>
       <div id="list"></div>
@@ -27,9 +28,13 @@ var socket = io.connect();
 //サーバにデータを送る関数
 $("#Reception").click(function(e){
   socket.emit("sharetable_list");
-  socket.emit("detail",7);
 e.preventDefault();
 });
+
+$("get_detail").click(function(r)){
+  socket.emit("detail",1);
+});
+socket.on("detail_back",res);
 
 socket.on("sharetable_list_back", function(res){
 for(var i=0; i<10;i=i+1){ 
