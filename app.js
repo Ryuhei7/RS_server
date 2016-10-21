@@ -139,7 +139,7 @@ client.query(get_detail, function(err,res_detail){
     infoback.shop_name = res_shop.rows[0].shop_name;
     infoback.shop_x = res_shop.rows[0].y;
     infoback.shop_y =res_shop.rows[0].x;
-    console.log(infoback);
+    console.log("success");
     io.sockets.emit('detail_back',infoback);
         });
      });

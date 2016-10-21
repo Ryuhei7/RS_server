@@ -27,7 +27,9 @@ var socket = io.connect();
 //サーバにデータを送る関数
 $("#Reception").click(function(e){
  // socket.emit("sharetable_list");
- spcket.emit("detail",1);
+var share_id = 1; 
+spcket.emit("detail",share_id);
+
 e.preventDefault();
 });
 
