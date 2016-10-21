@@ -71,8 +71,6 @@ console.log("connect server");
 socket.on( 'sharetable_start', function( source ) {
     console.log("recieved sharetable_start");
     
-    data = source.title + "," + source.category + "," + source.endtime + "," + source.explain + "," + source.shopid + "," + source.tableid + "," + source.userid + '\n';
-   
     var get_max = "select share_id from events;"    
 
     client.query(get_max, function(err,max)
@@ -90,24 +88,24 @@ socket.on( 'sharetable_start', function( source ) {
    }); 
 });
 
-/*
-    // /csv/ShopList.csv に保存
-    fs.appendFile(__dirname + "/csv/ShareTableList.csv", data , 'utf-8', function(err){
-      //もし見つからなかったらエラーを返す
-      if(err){
-        io.sockets.emit( 'sharetable_start_res', "error" );
-      }
-      //見つかったらcompleteを返す
-      io.sockets.emit( 'sharetable_start_res', "complete" );
-    });
-    console.log(data);
-  });
-*/
-
 
   //ShareTableList の一覧を出力
   socket.on( 'sharetable_list', function() {
-    // /csv/ShareTableList.csv を読みに行く
+   var table_info = "select share_id, title, category_id, explain from events;"
+
+client.query(table_info, function(err,info)
+{
+   console.log(table_info);
+   for(i=info.rows.length-1; i<=info.rows.lenghth-10;i--){
+    console.log("title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
+}
+
+io.sockets.emit('sharetable_list_bacl', "comming soon");
+
+});
+});
+/*  
+  // /csv/ShareTableList.csv を読みに行く
     fs.readFile(__dirname + "/csv/ShareTableList.csv", 'utf-8', function(err,source){
     //もし見つからなかったらエラーを返す
       if(err){
@@ -147,6 +145,8 @@ socket.on( 'sharetable_start', function( source ) {
       io.sockets.emit( 'sharetable_end_res', "complete" );
     });
   });
+*/
+
 
   //Category List
   socket.on( 'categorylist', function() {
