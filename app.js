@@ -111,6 +111,7 @@ arraylist[n] = list;
 i=(i-1)|0;
 n=(n+1)|0;
 }
+console.log(arraylist[9].title);
 io.sockets.emit('sharetable_list_back', arraylist);
 });
 });
