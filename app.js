@@ -96,16 +96,22 @@ socket.on( 'sharetable_start', function( source ) {
 client.query(table_info, function(err,info){
 console.log(info.rows.length);
 
-var i = 5;
-var m = info.rows.length; 
- i = (i-1);
-
-while(i>0){
- console.log("test");  
- console.log("title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
+var i = info.rows.length-1|0;
+var m = info.rows.length|0;
+var n = 0; 
+var list = new Object();
+var arraylist = new Array();
+while(i>=m-10){  
+ console.log("share_id="+info.rows[i].share_id+"title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
+list.shareid = info.rows[i].share_id; 
+list.title = info.rows[i].title;
+list.category_id = info.rows[i].category_id;
+list.explain = info.rows[i].explain;
+arraylist[n] = list;
 i=(i-1)|0;
+n=(n+1)|0;
 }
-io.sockets.emit('sharetable_list_back', "comming soon");
+io.sockets.emit('sharetable_list_back', arraylist);
 });
 });
 /*  
