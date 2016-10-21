@@ -97,8 +97,10 @@ client.query(table_info, function(err,info){
 console.log(info.rows.length);
 
 var i = info.rows.length;
+var m = info.rows.length; 
  i = (i-1);
-while(i<info.rows.length-10){
+
+while(i<m-10){
  console.log("test");  
  console.log("title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
 i=(i-1)|0;
