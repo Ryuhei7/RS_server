@@ -116,7 +116,7 @@ io.sockets.emit('sharetable_list_back', arraylist);
 });
 });
 
-/*
+
  //クライアントでリストのどれかを選ばれた後詳細を渡す
  socekt.on('detail',function (id){
 var infoback = new Object();
@@ -144,7 +144,7 @@ client.query(get_detail, function(err,res_detail){
      });
    });
 });
-*/
+
 
 
   //Category List
