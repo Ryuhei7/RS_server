@@ -98,10 +98,11 @@ client.query(table_info, function(err,info)
    console.log(table_info);
    console.log(info.rows.length);
 for(i=info.rows.length-1; i<=info.rows.lenghth-10;i--){
-    console.log("title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
+ console.log("test");  
+ console.log("title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
 }
 
-io.sockets.emit('sharetable_list_bacl', "comming soon");
+io.sockets.emit('sharetable_list_back', "comming soon");
 
 });
 });

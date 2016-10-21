@@ -27,11 +27,10 @@ var socket = io.connect();
 //サーバにデータを送る関数
 $("#Reception").click(function(e){
   socket.emit("sharetable_list");
-  socket.on("sharetable_list_res", function(res){getShareTableRes(res)});
-
-  function getShareTableRes(res) {
+  socket.on("sharetable_list_back", function(res){
     $("#res").html(res);
-
+});
+/*
     socket.on("sharetable_list_back", function(source){getShareTable(source)});
     function getShareTable(source) {
       $("#list").html("");
@@ -41,7 +40,7 @@ $("#Reception").click(function(e){
       }
     }
   }
-
+*/
   //この関数の中断
   e.preventDefault();
 });
