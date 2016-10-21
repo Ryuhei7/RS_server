@@ -80,7 +80,7 @@ socket.on( 'sharetable_start', function( source ) {
        var  share_max = max.rows.length+1;
        console.log(share_max); 
 
-    var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time) values ("+ share_max +","+source.shopid+","+source.tableid+",'"+source.title+"',"+source.category+",'"+source.explain+"',"+source.userid+",'"+source.endtime+"');"
+    var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time,seatinfo) values ("+ share_max +","+source.shopid+","+source.tableid+",'"+source.title+"',"+source.category+",'"+source.explain+"',"+source.userid+",'"+source.endtime+"',"+source.seatinfo+");"
     console.log(insert_share);
     client.query(insert_share);
     io.sockets.emit('sharetable_start_back', share_max);
@@ -115,49 +115,24 @@ console.log(arraylist[9].title);
 io.sockets.emit('sharetable_list_back', arraylist);
 });
 });
-/*  
-  // /csv/ShareTableList.csv を読みに行く
-    fs.readFile(__dirname + "/csv/ShareTableList.csv", 'utf-8', function(err,source){
-    //もし見つからなかったらエラーを返す
-      if(err){
-        io.sockets.emit( 'sharetable_list_res', "error" );
-      }
-      var yenN = source.split('\n');
-      var data = new Array();   //dataを配列として宣言
-      for(var i=0;i<yenN.length-1;i++){
-        var tmp = yenN[i].split(",");
-        data[i] = new Object();
-        data[i].title = tmp[0];
-        data[i].category = tmp[1];
-        data[i].endtime = tmp[2];
-        data[i].explain = tmp[3];
-        data[i].shopid = tmp[4];
-        data[i].tableid = tmp[5];
-        data[i].userid = tmp[6];
-      }
 
-    //見つかったらcompleteを返す
-      io.sockets.emit( 'sharetable_list_res', "complete" );
-      io.sockets.emit( 'sharetable_list_back', data );
-    });
-  });
+/*
+ //クライアントでリストのどれかを選ばれた後詳細を渡す
+ socekt.on('detail',function (id){
+var infoback = new Object();
+var get_detail = "select * from events where share_id = "+id+";"
+var get_h_user = "select user_id,name,hyoka from users where user_id = "+res_detail.rows[0].h_user_id+";"
 
-  //ShareTableList にテーブルのシェアを終了したことを記録
-  socket.on( 'sharetable_end', function( data ) {
-    data = data + '\n';
-
-    // /csv/ShopList.csv に保存
-    fs.appendFile(__dirname + "/csv/ShareTableList.csv", data , 'utf-8', function(err){
-      //もし見つからなかったらエラーを返す
-      if(err){
-        io.sockets.emit( 'sharetable_end_res', "error" );
-      }
-      //見つかったらcompleteを返す
-      io.sockets.emit( 'sharetable_end_res', "complete" );
-    });
-  });
-*/
-
+client.query(get_detail, function(res_detail){
+ client.query(get_h_user_, function(res_h_user){
+    infoback.hname =
+    infoback.huserid =
+    infoback.hyoka = 
+    infoback.title =
+    infoback.endtime = 
+    infoback.explain =
+    infoback.seatinfo =
+  */
 
   //Category List
   socket.on( 'categorylist', function() {
@@ -186,6 +161,8 @@ io.sockets.emit('sharetable_list_back', arraylist);
     
   });
 });
+
+
 
 /*
 // クライアントからサーバーへ メッセージ送信ハンドラ（自分以外の全員宛に送る）
