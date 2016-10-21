@@ -118,7 +118,7 @@ io.sockets.emit('sharetable_list_back', arraylist);
 
 
  //クライアントでリストのどれかを選ばれた後詳細を渡す
- socekt.on('detail',function (id){
+ socket.on('detail',function (id){
 var infoback = new Object();
 var get_detail = "select * from events where share_id = "+id+";"
 var get_h_user = "select user_id,name,hyoka from users where user_id = "+res_detail.rows[0].h_user_id+";"
@@ -139,7 +139,7 @@ client.query(get_detail, function(err,res_detail){
     infoback.shop_x = res_shop.rows[0].y;
     infoback.shop_y =res_shop.rows[0].x;
     console.log(infoback);
-    io.socket.emit('detail_back',infoback);
+    io.sockets.emit('detail_back',infoback);
         });
      });
    });
