@@ -32,7 +32,7 @@ $("#Reception").click(function(e){
 
 socket.on("sharetable_list_back", function(res){
 for(var i=0; i<10;i=i+1){ 
-   $("#res").html(res[i].title+" "+res[i].category+" "+res[i].explain);
+   $("#res").html(res[i].title+" "+res[i].category_id+" "+res[i].explain);
 }
 });
 
