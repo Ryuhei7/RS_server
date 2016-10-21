@@ -123,7 +123,7 @@ io.sockets.emit('sharetable_list_back', arraylist);
 var infoback = new Object();
 var get_detail = "select * from events where share_id = "+id+";"
 client.query(get_detail, function(err,res_detail){
- client.query(get_h_user_, function(err,res_h_user){
+ client.query(get_h_user, function(err,res_h_user){
    var get_h_user = "select user_id,name,hyoka from users where user_id = "+res_detail.rows[0].h_user_id+";"
    client.query(get_shop, function(err,res_shop){
 
