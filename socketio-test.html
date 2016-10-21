@@ -28,16 +28,17 @@ href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script type="text/javascript">
       var socket = io.connect();
       
-      socket.on("test_back", function(data){appendMsg(data)});
+      socket.on("detail_back", function(data){appendMsg(data)});
       
       function appendMsg(data) {
-        $("#chatLogs").append("<div>" + data + "</div>");
+        $("#chatLogs").append("<div>" + data.title + "</div>");
       }
     
       $("form").submit(function(e){
-        var message = $("#msgForm").val();
+        var message = 1;
+    // $("#msgForm").val();
         $("#msgForm").val('');
-        socket.emit("test", message);
+        socket.emit("detail", message);
         e.preventDefault();
       });        
 
