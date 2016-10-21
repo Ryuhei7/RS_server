@@ -96,7 +96,8 @@ socket.on( 'sharetable_start', function( source ) {
 client.query(table_info, function(err,info)
 {
    console.log(table_info);
-   for(i=info.rows.length-1; i<=info.rows.lenghth-10;i--){
+   console.log(info.rows.length);
+for(i=info.rows.length-1; i<=info.rows.lenghth-10;i--){
     console.log("title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
 }
 
