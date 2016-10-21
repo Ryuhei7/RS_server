@@ -119,6 +119,7 @@ io.sockets.emit('sharetable_list_back', arraylist);
 
  //クライアントでリストのどれかを選ばれた後詳細を渡す
  socket.on('detail',function (id){
+ console.log("受信");
 var infoback = new Object();
 var get_detail = "select * from events where share_id = "+id+";"
 var get_h_user = "select user_id,name,hyoka from users where user_id = "+res_detail.rows[0].h_user_id+";"
