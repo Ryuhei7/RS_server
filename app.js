@@ -122,17 +122,23 @@ io.sockets.emit('sharetable_list_back', arraylist);
 var infoback = new Object();
 var get_detail = "select * from events where share_id = "+id+";"
 var get_h_user = "select user_id,name,hyoka from users where user_id = "+res_detail.rows[0].h_user_id+";"
+var get_shop = "select * from shops where shop_id = "+res_detail.rows[0].shop_id+";"
 
-client.query(get_detail, function(res_detail){
- client.query(get_h_user_, function(res_h_user){
-    infoback.hname =
-    infoback.huserid =
-    infoback.hyoka = 
-    infoback.title =
-    infoback.endtime = 
-    infoback.explain =
-    infoback.seatinfo =
-  */
+client.query(get_detail, function(err,res_detail){
+ client.query(get_h_user_, function(err,res_h_user){
+  client.query(get_shop, function(err,res_shop){
+    infoback.hname = get_h_user.rows[0].name;
+    infoback.huserid = get_h_user.rows[0].user_id;
+    infoback.hyoka =  get_h_user.rows[0].hyoka;
+    infoback.title = get_detail.rows[0].title;
+    infoback.endtime = get_detail.rows[0].endtime; 
+    infoback.explain = get_detail.rows[0].explain;]
+    infoback.seatinfo = get_detail.rows[0]
+    infoback.shop_address =
+    infoback.shop_name =
+    infoback.shop_x = 
+    infoback.shop_y =
+*/
 
   //Category List
   socket.on( 'categorylist', function() {
