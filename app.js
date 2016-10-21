@@ -100,7 +100,7 @@ var i = 5;
 var m = info.rows.length; 
  i = (i-1);
 
-while(i<0){
+while(i>0){
  console.log("test");  
  console.log("title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
 i=(i-1)|0;
