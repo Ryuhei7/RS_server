@@ -93,19 +93,17 @@ socket.on( 'sharetable_start', function( source ) {
   socket.on( 'sharetable_list', function() {
    var table_info = "select share_id, title, category_id, explain from events;"
 
-client.query(table_info, function(err,info)
-{
-for(i=0;i=2;i++){
-   console.log(table_info);
-}   
+client.query(table_info, function(err,info){
 console.log(info.rows.length);
-for(i=info.rows.length-1; i=info.rows.lenghth-10;i--){
+
+var i = info.rows.length;
+ i = (i-1);
+while(i<info.rows.length-10){
  console.log("test");  
  console.log("title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
+i=(i-1)|0;
 }
-
 io.sockets.emit('sharetable_list_back', "comming soon");
-
 });
 });
 /*  
