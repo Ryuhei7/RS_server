@@ -49,11 +49,7 @@ console.log("connect server");
     io.sockets.emit( 'test_back', data );
     //console.log(datta.value);
     console.log(data);
-    var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time) values (0,0,0,'test',0,'test',0,'0:00');"
-    client.query(insert_share);
-    console.log(insert_share);//SQL文をコンソールに表示
-    });
-
+});
   //QRCode Maker
   socket.on( 'qrcodemaker', function( source ) {
     data = source.shopid + "," + source.tableid + '\n';
@@ -72,10 +68,10 @@ console.log("connect server");
 
   //ShareTable List
   //ShareTableList に新しくテーブルを追加
-  socket.on( 'sharetable_start', function( source ) {
+socket.on( 'sharetable_start', function( source ) {
     console.log("recieved sharetable_start");
     
-data = source.title + "," + source.category + "," + source.endtime + "," + source.explain + "," + source.shopid + "," + source.tableid + "," + source.userid + '\n';
+    data = source.title + "," + source.category + "," + source.endtime + "," + source.explain + "," + source.shopid + "," + source.tableid + "," + source.userid + '\n';
    
     var get_max = "select share_id from events;"    
 
@@ -86,10 +82,10 @@ data = source.title + "," + source.category + "," + source.endtime + "," + sourc
        var  share_max = max.rows.length+1;
        console.log(share_max); 
 
-    var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time) values ("+ share_max +",0,0,'test',0,'test',0,'0:00');"
+    var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time) values ("+ share_max +","+source.shopid+","+source.tableid+",'"+source.title+"',"+source.category+",'"+source.explain+"',"+source.userid+",'"+source.endtime+"');"
     console.log(insert_share);
     client.query(insert_share);
-    io.sockets.emit('sharetable_start_back', "complete");
+    io.sockets.emit('sharetable_start_back', share_max);
   
    }); 
 });
