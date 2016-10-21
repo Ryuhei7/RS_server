@@ -23,11 +23,8 @@ var server = http.createServer( function( req, res ) {
   });
 });
 server.listen(process.env.PORT)
-/*
-    res.writeHead(200, { 'Content-Type' : 'text/html' }); // ヘッダ出力
-    res.end( fs.readFileSync(__dirname + '/index.html', 'utf-8') );  // index.htmlの内容を出力
-    }).listen(process.env.PORT);
-    */
+
+
 
 // サーバーをソケットに紐付ける
 var io = socketio.listen( server );
@@ -52,43 +49,80 @@ io.sockets.on( 'connection', function( socket ) {
     fs.appendFile(__dirname + "/csv/ShopList.csv", data , 'utf-8', function(err){
       //もし見つからなかったらエラーを返す
       if(err){
-        io.sockets.emit( 'qrcodemaker_back', "error" );
+        io.sockets.emit( 'qrcodemaker_res', "error" );
       }
       //見つかったらcompleteを返す
-      io.sockets.emit( 'qrcodemaker_back', "complete" );
+      io.sockets.emit( 'qrcodemaker_res', "complete" );
     });
 
     console.log(data);
   });
 
-  //ShareTableList
-  socket.on( '', function( data ) {
+  //ShareTable List
+  //ShareTableList に新しくテーブルを追加
+  socket.on( 'sharetable_start', function( data ) {
     data = data + '\n';
 
     // /csv/ShopList.csv に保存
-    fs.appendFile(__dirname + "/csv/ShopList.csv", data , 'utf-8', function(err){
+    fs.appendFile(__dirname + "/csv/ShareTableList.csv", data , 'utf-8', function(err){
       //もし見つからなかったらエラーを返す
       if(err){
-        io.sockets.emit( 'qrcodemaker_back', "error" );
+        io.sockets.emit( 'sharetable_start_res', "error" );
       }
       //見つかったらcompleteを返す
-      io.sockets.emit( 'qrcodemaker_back', "complete" );
+      io.sockets.emit( 'sharetable_start_res', "complete" );
     });
 
     console.log(data);
   });
 
-  /*
-  // クライアントからサーバーへ メッセージ送信ハンドラ（自分以外の全員宛に送る）
-    socket.on( 'c2s_broadcast', function( data ) {
-  // サーバーからクライアントへ メッセージを送り返し
-        socket.broadcast.emit( 's2c_message', { value : data.value } );
+  //ShareTableList にテーブルのシェアを終了したことを記録
+  socket.on( 'sharetable_end', function( data ) {
+    data = data + '\n';
+
+    // /csv/ShopList.csv に保存
+    fs.appendFile(__dirname + "/csv/ShareTableList.csv", data , 'utf-8', function(err){
+      //もし見つからなかったらエラーを返す
+      if(err){
+        io.sockets.emit( 'sharetable_end_res', "error" );
+      }
+      //見つかったらcompleteを返す
+      io.sockets.emit( 'sharetable_end_res', "complete" );
     });
-    */
 
+    console.log(data);
+  });
 
+  //Category List
+  socket.on( 'categorylist', function() {
+
+    // /csv/CategoryList.csv を見に行く
+    // fs.readFileSync(process.argv[2], 'utf8').split('\n').length - 1
+    fs.readFile(__dirname + "/csv/CategoryList.csv", 'utf-8', function(err,source){
+      //もし見つからなかったらエラーを返す
+      if(err){
+        io.sockets.emit( 'categorylist_res', "error" );
+      }
+      //見つかったらcompleteを返す
+      //var yenN = source.split('\n');
+      var resultString = source.split(",");
+
+      io.sockets.emit( 'categorylist_res', "complete" );
+      io.sockets.emit( 'categorylist_back' , resultString);
+    });
+
+    //console.log(data);
+
+  });
 });
 
+/*
+// クライアントからサーバーへ メッセージ送信ハンドラ（自分以外の全員宛に送る）
+    socket.on( 'c2s_broadcast', function( data ) {
+// サーバーからクライアントへ メッセージを送り返し
+  socket.broadcast.emit( 's2c_message', { value : data.value } );
+    });
+    */
 
 // http://engineer.recruit-lifestyle.co.jp/techblog/2015-07-29-node4/
 

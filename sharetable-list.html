@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>Revive Seat - QRCode Maker</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.qrcode.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h3><a href="index.html"><|戻る</a></h3>
+      <h1>ShareTable List</h1>
+      <form class="form-inline">
+        <div class="form-group">
+          <label for="">シェアタイトル：</label>
+          <input type="text" class="form-control" id="sharetitle">
+          <br>
+          <label for="tablenum">カテゴリー：</label>
+          <input type="text" class="form-control" id="category">
+          <br>
+          <label for="tablenum">シェア終了時刻：</label>
+          <input type="text" class="form-control" id="shareendtime">
+          <br>
+          <label for="tablenum">備考：</label>
+          <input type="text" class="form-control" id="remark">
+          <br>
+        </div><br>
+        <button type="submit" class="btn btn-primary">送信</button>
+      </form>
+      <br>
+      <div id="res"></div>
+    </div>
+    <script type="text/javascript">
+//ソケット通信の準備
+var socket = io.connect();
+
+
+socket.on("qrcodemaker_back", function(data){
+  $("#qrres").html(data);
+});
+
+//サーバにデータを送る関数
+$("form").submit(function(e){
+  //入力フィールドの内容を変数に代入
+  var sharetitle = $("#sharetitle").val();
+  var category = $("#category").val();
+  var shareendtime = $("#shareendtime").val();
+  var remark = $("#remark").val();
+  var message = sharetitle + "," + category + "," + shareendtime + "," + remark;
+
+  // "qrcodemaker"というイベントに message という変数を送信
+  socket.emit("sharetable_start", message);
+
+  //この関数の中断
+  e.preventDefault();
+});
+    </script>
+  </body>
+</html>
