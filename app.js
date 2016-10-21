@@ -127,18 +127,25 @@ var get_shop = "select * from shops where shop_id = "+res_detail.rows[0].shop_id
 client.query(get_detail, function(err,res_detail){
  client.query(get_h_user_, function(err,res_h_user){
   client.query(get_shop, function(err,res_shop){
-    infoback.hname = get_h_user.rows[0].name;
-    infoback.huserid = get_h_user.rows[0].user_id;
-    infoback.hyoka =  get_h_user.rows[0].hyoka;
-    infoback.title = get_detail.rows[0].title;
-    infoback.endtime = get_detail.rows[0].endtime; 
-    infoback.explain = get_detail.rows[0].explain;]
-    infoback.seatinfo = get_detail.rows[0]
-    infoback.shop_address =
-    infoback.shop_name =
-    infoback.shop_x = 
-    infoback.shop_y =
+    infoback.hname = res_h_user.rows[0].name;
+    infoback.huserid = res_h_user.rows[0].user_id;
+    infoback.hyoka =  res_h_user.rows[0].hyoka;
+    infoback.title = res_detail.rows[0].title;
+    infoback.endtime = res_detail.rows[0].endtime; 
+    infoback.explain = res_detail.rows[0].explain;
+    infoback.seatinfo = res_detail.rows[0].seatinfo;
+    infoback.shop_address = res_shop.rows[0].address;
+    infoback.shop_name = res_shop.rows[0].shop_name;
+    infoback.shop_x = res_shop.rows[0].y;
+    infoback.shop_y =res_shop.rows[0].x;
+    console.log(infoback);
+    io.socket.emit('detail_back',infoback);
+        });
+     });
+   });
+});
 */
+
 
   //Category List
   socket.on( 'categorylist', function() {
