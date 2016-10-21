@@ -31,7 +31,9 @@ $("#Reception").click(function(e){
 });
 
 socket.on("sharetable_list_back", function(res){
-    $("#res").html(res[2].title);
+for(var i=0; i<10;i=i+1){ 
+   $("#res").html(res[i].title+" "+res[i].category+" "+res[i].explain);
+}
 });
 
 /*
