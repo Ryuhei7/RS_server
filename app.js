@@ -42,9 +42,8 @@ io.sockets.on( 'connection', function( socket ) {
   });
 
   //QRCode Maker
-  socket.on( 'qrcodemaker', function( data ) {
-    data = data + '\n';
-
+  socket.on( 'qrcodemaker', function( source ) {
+    data = source.shopid + "," + source.tableid + '\n';
     // /csv/ShopList.csv に保存
     fs.appendFile(__dirname + "/csv/ShopList.csv", data , 'utf-8', function(err){
       //もし見つからなかったらエラーを返す
@@ -61,8 +60,8 @@ io.sockets.on( 'connection', function( socket ) {
   //ShareTable List
   //ShareTableList に新しくテーブルを追加
   socket.on( 'sharetable_start', function( source ) {
-    data = source.title + "," + source.category + "," + source.endtime + "," + source.explain + "," + source.shopid + "," + source.tableid + "," + source.userid + ":";
-    
+    data = source.title + "," + source.category + "," + source.endtime + "," + source.explain + "," + source.shopid + "," + source.tableid + "," + source.userid + '\n';
+
     // /csv/ShopList.csv に保存
     fs.appendFile(__dirname + "/csv/ShareTableList.csv", data , 'utf-8', function(err){
       //もし見つからなかったらエラーを返す
@@ -78,17 +77,13 @@ io.sockets.on( 'connection', function( socket ) {
 
   //ShareTableList の一覧を出力
   socket.on( 'sharetable_list', function() {
-      console.log("test");
-      io.sockets.emit( 'sharetable_list_res', "complete" );
-      io.sockets.emit( 'sharetable_list_back', "tes" );
-    /*
-    // /csv/ShopList.csv に保存
+    // /csv/ShareTableList.csv を読みに行く
     fs.readFile(__dirname + "/csv/ShareTableList.csv", 'utf-8', function(err,source){
-      //もし見つからなかったらエラーを返す
+    //もし見つからなかったらエラーを返す
       if(err){
         io.sockets.emit( 'sharetable_list_res', "error" );
       }
-      var yenN = source.split(":");
+      var yenN = source.split('\n');
       var data = new Array();   //dataを配列として宣言
       for(var i=0;i<yenN.length-1;i++){
         var tmp = yenN[i].split(",");
@@ -102,11 +97,10 @@ io.sockets.on( 'connection', function( socket ) {
         data[i].userid = tmp[6];
       }
 
-      //見つかったらcompleteを返す
+    //見つかったらcompleteを返す
       io.sockets.emit( 'sharetable_list_res', "complete" );
       io.sockets.emit( 'sharetable_list_back', data );
     });
-    */
   });
 
   //ShareTableList にテーブルのシェアを終了したことを記録
