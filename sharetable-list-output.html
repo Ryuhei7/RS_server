@@ -2,7 +2,7 @@
 <html lang="ja">
   <head>
     <meta charset="utf-8">
-    <title>Revive Seat - Category List</title>
+    <title>Revive Seat - QRCode Maker</title>
     <link rel="stylesheet"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -11,9 +11,9 @@
   </head>
   <body>
     <div class="container">
-      <h3><a href="index.html"><|戻る</a>　　　<a href="csv/CategoryList.csv">登録されているリストを見る|></a></h3>
-      <h1>Category List</h1>
-      <button id="Reception" class="btn btn-primary">受信</button>
+      <h3><a href="index.html"><|戻る</a>　　　<a href="sharetable-list-add.html">リストに登録する|></a></h3>
+      <h1>ShareTable List</h1>
+      <button type="Reception" class="btn btn-primary">受信</button>
       <br>
       <div id="res"></div>
       <br>
@@ -26,19 +26,18 @@ var socket = io.connect();
 
 //サーバにデータを送る関数
 $("#Reception").click(function(e){
-  socket.emit("categorylist");
-  socket.on("categorylist_res", function(res){getCategoryRes(res)});
+  socket.emit("sharetable_list");
+  socket.on("sharetable_list_res", function(res){getShareTableRes(res)});
 
-  function getCategoryRes(res) {
-    $("#res").html("");
+  function getShareTableRes(res) {
     $("#res").html(res);
 
-    socket.on("categorylist_back", function(data){getCategory(data)});
-
-    function getCategory(data) {
+    socket.on("sharetable_list_back", function(source){getShareTable(source)});
+    function getShareTable(source) {
       $("#list").html("");
-      for (var i=0 ; i<data.length ; i++){
-        $("#list").append(data[i] + "<br>");
+      for (var i=0; i<source.length; i++){
+        var data = source[i].title + " , " + source[i].category + " , " + source[i].endtime + " , " + source[i].explain + " , " + source[i].shopid + " , " + source[i].tableid + " , " + source[i].userid + "<br>";
+        $("#list").append(data);
       }
     }
   }
@@ -46,6 +45,7 @@ $("#Reception").click(function(e){
   //この関数の中断
   e.preventDefault();
 });
+
     </script>
   </body>
 </html>
