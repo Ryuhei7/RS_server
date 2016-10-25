@@ -82,7 +82,7 @@ io.sockets.on( 'connection', function( socket ) {
           var  share_max = max.rows.length+1;
           console.log(share_max); 
 
-          var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time,seatinfo) values ("+ share_max +","+source.shopid+","+source.tableid+",'"+source.title+"',"+source.category+",'"+source.explain+"',"+source.userid+",'"+source.endtime+"',"+source.seatinfo+");"
+          var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time,seatinfo) values ("+ share_max +","+source.shopid+","+source.tableid+",'"+source.title+"',"+source.category_id+",'"+source.explain+"',"+source.userid+",'"+source.endtime+"',"+source.seatinfo+");"
           console.log(insert_share);
           client.query(insert_share);
           io.sockets.emit('sharetable_start_back', share_max);
