@@ -13,7 +13,7 @@ href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <h3><a href="index.html"><|戻る</a></h3>
     <h1>Socket.IO Test</h1>
         </div>
-          <button type="submit" class="btn btn-primary">受信</button>
+          <button id="detail"  class="btn btn-primary">受信</button>
       </form>
 
       <div id="chatLogs"></div>
@@ -30,7 +30,7 @@ href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         $("#chatLogs").append("<div>" + data.hname+ " "+ data.huserid+" " + data.hyoka+" " + data.title+" "+ data.explain+" " + data.shop_name + "</div>");
       }
     
-      $("btn btn-primary").submit(function(e){
+      $("#detail").click(function(e){
         var message = 1|0;
         socket.emit("detail", message);
         e.preventDefault();
