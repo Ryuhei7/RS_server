@@ -50,6 +50,8 @@ io.sockets.on( 'connection', function( socket ) {
       //console.log(datta.value);
       console.log(data);
     });
+
+
     //QRCode Maker
     socket.on( 'qrcodemaker', function( source ) {
       data = source.shopid + "," + source.tableid + '\n';
@@ -84,19 +86,8 @@ io.sockets.on( 'connection', function( socket ) {
           console.log(insert_share);
           client.query(insert_share);
           io.sockets.emit('sharetable_start_back', share_max);
-
- //クライアントでリストのどれかを選ばれた後詳細を渡す
- socket.on('detail',function (id){
- console.log("受信");
-var infoback = new Object();
-var get_detail = "select * from events where share_id = "+id+";"
-  client.query(get_detail, function(err,res_detail){
-var get_h_user = "select user_id,name,hyoka from users where user_id = "+res_detail.rows[0].h_user_id+";"
-  client.query(get_h_user, function(err,res_h_user){
-   var get_shop = "select * from shops where shop_id = "+res_detail.rows[0].shop_id+";"  
-    client.query(get_shop, function(err,res_shop){
-        }); 
-    });
+        });
+     });
 
 
     //ShareTableList の一覧を出力
