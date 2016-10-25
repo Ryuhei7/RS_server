@@ -35,7 +35,7 @@ href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
       }
     
       $("form").submit(function(e){
-        $("#msgForm").val();
+       var message= $("#msgForm").val();
         $("#msgForm").val('');
         socket.emit("test", message);
         e.preventDefault();

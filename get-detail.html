@@ -30,7 +30,7 @@ href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         $("#chatLogs").append("<div>" + data.hname+ " "+ data.huserid+" " + data.hyoka+" " + data.title+" "+ data.explain+" " + data.shop_name + "</div>");
       }
     
-      $("form").submit(function(e){
+      $("btn btn-primary").submit(function(e){
         var message = 1|0;
         socket.emit("detail", message);
         e.preventDefault();
