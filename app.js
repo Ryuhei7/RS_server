@@ -127,40 +127,35 @@ var get_h_user = "select user_id,name,hyoka from users where user_id = "+res_det
     });
 
 
-    //クライアントでリストのどれかを選ばれた後詳細を渡す
-    socket.on('detail',function (id){
-      console.log("受信");
-      var infoback = new Object();
-      var get_detail = "select * from events where share_id = "+id+";"
 
-      client.query(get_detail, function(res_detail){
-        client.query(get_h_user, function(res_h_user){
+     //クライアントでリストのどれかを選ばれたときに詳細を渡す
+     socket.on('detail',function (id){
+       console.log("受信");
+        var infoback = new Object();
+        var get_detail = "select * from events where share_id = "+id+";"
+         client.query(get_detail, function(err,res_detail){
+         var get_h_user = "select user_id,name,hyoka from users where user_id = "+res_detail.rows[0].h_user_id+";"
+          client.query(get_h_user, function(err,res_h_user){
+          var get_shop = "select * from shops where shop_id = "+res_detail.rows[0].shop_id+";"  
+           client.query(get_shop, function(err,res_shop){
 
-          var get_h_user = "select user_id,name,hyoka from users where user_id = "+res_detail.rows[0].h_user_id+";"
-
-          client.query(get_shop, function(res_shop){
-
-            var get_shop = "select * from shops where shop_id = "+res_detail.rows[0].shop_id+";"
-
-            infoback.hname = res_h_user.rows[0].name;
-            infoback.huserid = res_h_user.rows[0].user_id;
-            infoback.hyoka =  res_h_user.rows[0].hyoka;
-            infoback.title = res_detail.rows[0].title;
-            infoback.endtime = res_detail.rows[0].endtime; 
-            infoback.explain = res_detail.rows[0].explain;
-            infoback.seatinfo = res_detail.rows[0].seatinfo;
-            infoback.shop_address = res_shop.rows[0].address;
-            infoback.shop_name = res_shop.rows[0].shop_name;
-            infoback.shop_x = res_shop.rows[0].y;
-            infoback.shop_y =res_shop.rows[0].x;
-            console.log("success");
-            io.sockets.emit('detail_back',infoback);
+           infoback.hname = res_h_user.rows[0].name;
+           infoback.huserid = res_h_user.rows[0].user_id;
+           infoback.hyoka =  res_h_user.rows[0].hyoka;
+           infoback.title = res_detail.rows[0].title;
+           infoback.endtime = res_detail.rows[0].endtime; 
+           infoback.explain = res_detail.rows[0].explain;
+           infoback.seatinfo = res_detail.rows[0].seatinfo;
+           infoback.shop_address = res_shop.rows[0].address;
+           infoback.shop_name = res_shop.rows[0].shop_name;
+           infoback.shop_x = res_shop.rows[0].y;
+           infoback.shop_y =res_shop.rows[0].x;
+           console.log("success");
+           io.sockets.emit('detail_back',infoback);
           });
         });
       });
     });
-
-
 
     //Category List
     socket.on( 'categorylist', function() {
