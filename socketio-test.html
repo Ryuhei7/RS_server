@@ -31,7 +31,7 @@ href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
       socket.on("detail_back", function(data){appendMsg(data)});
       
       function appendMsg(data) {
-        $("#chatLogs").append("<div>" + data.hname + data.huserid + data.hyoka + data.title + data.explain + data.shop_name "</div>");
+        $("#chatLogs").append("<div>" + data.hname + data.huserid + data.hyoka + data.title + data.explain + data.shop_name + "</div>");
       }
     
       $("form").submit(function(e){
