@@ -1,8 +1,8 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <title>Revive Seat - Socket.IO Test</title>
+  <title>Revive Seat - Detail test</title>
   <link rel="stylesheet"
 href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -12,12 +12,8 @@ href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <div class="container">
     <h3><a href="index.html"><|戻る</a></h3>
     <h1>Socket.IO Test</h1>
-      <form class="form-inline">
-        <div class="form-group">
-          <label for="msgForm">メッセージ：</label>
-            <input type="text" class="form-control" id="msgForm">
         </div>
-          <button type="submit" class="btn btn-primary">送信</button>
+          <button type="submit" class="btn btn-primary">受信</button>
       </form>
 
       <div id="chatLogs"></div>
@@ -28,21 +24,20 @@ href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script type="text/javascript">
       var socket = io.connect();
       
-      socket.on("test_back", function(data){appendMsg(data)});
+      socket.on("detail_back", function(data){appendMsg(data)});
       
       function appendMsg(data) {
-        $("#chatLogs").append("<div>" + data + "</div>");
+        $("#chatLogs").append("<div>" + data.hname+ " "+ data.huserid+" " + data.hyoka+" " + data.title+" "+ data.explain+" " + data.shop_name + "</div>");
       }
     
       $("form").submit(function(e){
-        $("#msgForm").val();
-        $("#msgForm").val('');
-        socket.emit("test", message);
+        var message = 1|0;
+        socket.emit("detail", message);
         e.preventDefault();
       });        
-
     </script>
 
 
 </body>
 </html>
+
