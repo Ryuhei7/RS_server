@@ -72,7 +72,7 @@ io.sockets.on( 'connection', function( socket ) {
     //ShareTableList に新しくテーブルを追加
     socket.on( 'sharetable_start', function( source ) {
       console.log("recieved sharetable_start");
-
+      console.log(source[0]);
       var get_max = "select share_id from events;"    
 
       client.query(get_max, function(err,max)
@@ -81,8 +81,9 @@ io.sockets.on( 'connection', function( socket ) {
           console.log(max);
           var  share_max = max.rows.length+1;
           console.log(share_max); 
+   
 
-          var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time,seatinfo) values ("+ share_max +","+source.shopid+","+source.tableid+",'"+source.title+"',"+source.category_id+",'"+source.explain+"',"+source.userid+",'"+source.endtime+"',"+source.seatinfo+");"
+          var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time,seatinfo) values ("+ share_max +","+source[4]+","+source[5]+",'"+source[0]+"',"+source[1]+",'"+source[3]+"',"+source[6]+",'"+source[2]+"',"+source[7]+");"
           console.log(insert_share);
           client.query(insert_share);
           io.sockets.emit('sharetable_start_back', share_max);
