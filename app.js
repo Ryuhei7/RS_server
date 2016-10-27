@@ -114,7 +114,7 @@ io.sockets.on( 'connection', function( socket ) {
           arraylist[n] = list;
           i=(i-1)|0;
           n= n + 1;
-          console.log(arraylist[n].title);
+          console.log(arraylist[n].list.title);
         }
         io.sockets.emit('sharetable_list_back', arraylist);
       });
