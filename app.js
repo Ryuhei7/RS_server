@@ -146,7 +146,7 @@ io.sockets.on( 'connection', function( socket ) {
            infoback.shop_x = res_shop.rows[0].y;
            infoback.shop_y =res_shop.rows[0].x;
            console.log("success");
-          console.log(infoback.endtime);
+          console.log(infoback.category);
            io.sockets.emit('detail_back',infoback);
           });
         });
