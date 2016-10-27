@@ -113,7 +113,7 @@ io.sockets.on( 'connection', function( socket ) {
           list.shopname = sinfo.rows[0].shop_name;
           arraylist[n] = list;
           i=(i-1)|0;
-          console.log(arraylist[n].list.title);
+          console.log(arraylist[n].title);
           n= n + 1;
         }
         io.sockets.emit('sharetable_list_back', arraylist);
