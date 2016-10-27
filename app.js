@@ -161,14 +161,17 @@ client.query(getuser,function(err,result){
 });
 });
 
+//ホストからキャンセルの0か、許可の1を受け取ってそれをゲストユーザーへ返す
 socket.on('answer',function(data){
 io.sockets.emit('answer_back',data)
 });
 
+//ゲストがお店にQRでチェックインしたときに1を受け取りそれをホスト側へ送る
 socket.on('gcheck',function(data){
 io.sockets.emit('gcheck_alart',data)
 });
 
+//最後の評価
 socket.on('sethyoka',function(data){
 var gethyoka = "select hyoka_sum, hyoka_times from users where user_id= "+data.recieveuserid+";"
 
