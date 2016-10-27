@@ -105,15 +105,15 @@ io.sockets.on( 'connection', function( socket ) {
         var arraylist = new Array();
         while(i>=m-10){  
           console.log("share_id="+info.rows[i].share_id+"title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
-          var list = new Object();
-          list.shareid = info.rows[i].share_id; 
-          list.title = info.rows[i].title;
-          list.category_id = info.rows[i].category_id|0;
-          list.explain = info.rows[i].explain;
-          list.shopname = sinfo.rows[0].shop_name;
-          arraylist[n] = list;
+          arraylist[n] = new Object();
+          arraylist[n].shareid = info.rows[i].share_id; 
+          arraylist[n].title = info.rows[i].title;
+          arraylist[n].category_id = info.rows[i].category_id|0;
+          arraylist[n].explain = info.rows[i].explain;
+          arraylist[n].shopname = sinfo.rows[0].shop_name;
+          //arraylist[n] = list;
           i=(i-1)|0;
-          console.log(arraylist[n].title);
+          //console.log(arraylist[n].title);
           n= n + 1;
         }
         io.sockets.emit('sharetable_list_back', arraylist);
