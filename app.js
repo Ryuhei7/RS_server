@@ -108,7 +108,7 @@ io.sockets.on( 'connection', function( socket ) {
           console.log("share_id="+info.rows[i].share_id+"title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
           list.shareid = info.rows[i].share_id; 
           list.title = info.rows[i].title;
-          list.category_id = info.rows[i].category_id;
+          list.category_id = info.rows[i].category_id|0;
           list.explain = info.rows[i].explain;
           list.shopname = sinfo.rows[0].shop_name;
           arraylist[n] = list;
