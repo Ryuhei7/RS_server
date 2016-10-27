@@ -94,7 +94,9 @@ io.sockets.on( 'connection', function( socket ) {
     socket.on( 'sharetable_list', function() {
       var table_info = "select share_id, title, category_id, explain from events;"
 
+     var shop_info = "select shop_name from shops;"
       client.query(table_info, function(err,info){
+       client.query(shop_info, function(err, sinfo){
         console.log(info.rows.length);
 
         var i = info.rows.length-1|0;
@@ -108,6 +110,7 @@ io.sockets.on( 'connection', function( socket ) {
           list.title = info.rows[i].title;
           list.category_id = info.rows[i].category_id;
           list.explain = info.rows[i].explain;
+          list.shopname = sinfo.rows[0].shop_name;
           arraylist[n] = list;
           i=(i-1)|0;
           n=(n+1)|0;
@@ -116,7 +119,7 @@ io.sockets.on( 'connection', function( socket ) {
         io.sockets.emit('sharetable_list_back', arraylist);
       });
     });
-
+  });
 
 
      //クライアントでリストのどれかを選ばれたときに詳細を渡す
