@@ -102,10 +102,10 @@ io.sockets.on( 'connection', function( socket ) {
         var i = info.rows.length-1;
         var m = info.rows.length;
         var n = 0; 
-        var list = new Object();
         var arraylist = new Array();
         while(i>=m-10){  
           console.log("share_id="+info.rows[i].share_id+"title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
+          var list = new Object();
           list.shareid = info.rows[i].share_id; 
           list.title = info.rows[i].title;
           list.category_id = info.rows[i].category_id|0;
