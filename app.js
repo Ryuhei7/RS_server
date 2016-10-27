@@ -99,8 +99,8 @@ io.sockets.on( 'connection', function( socket ) {
        client.query(shop_info, function(err, sinfo){
         console.log(info.rows.length);
 
-        var i = info.rows.length-1|0;
-        var m = info.rows.length|0;
+        var i = info.rows.length-1;
+        var m = info.rows.length;
         var n = 0; 
         var list = new Object();
         var arraylist = new Array();
@@ -146,6 +146,7 @@ io.sockets.on( 'connection', function( socket ) {
            infoback.shop_x = res_shop.rows[0].y;
            infoback.shop_y =res_shop.rows[0].x;
            console.log("success");
+          console.log(infoback.endtime);
            io.sockets.emit('detail_back',infoback);
           });
         });
