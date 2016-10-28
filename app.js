@@ -158,9 +158,9 @@ socket.on('decide',function(data){
  var getuser= "select user_id,name,hyoka from users where user_id =2;"
 var guser = new Object();
 client.query(getuser,function(err,result){
- guser.userid = result.row[0].user_id;
- guser.name = result.row[0].name;
- guser.hyoka = result.row[0].hyoka;
+ guser.userid = result.rows[0].user_id;
+ guser.name = result.rows[0].name;
+ guser.hyoka = result.rows[0].hyoka;
  console.log("success");
  io.sockets.emit('decide_back',guser);
 });
