@@ -155,7 +155,7 @@ io.sockets.on( 'connection', function( socket ) {
 
 //ゲストが参加ボタンをおしてからホストへ情報を送るまで
 socket.on('decide',function(data){
- var getuser= "select user_id,name,hyoka from users where user_id ="+data+";"
+ var getuser= "select user_id,name,hyoka from users where user_id =2;"
 var guser = new Object();
 client.query(getuser,function(err,result){
  guser.userid = result.row[0].user_id;
@@ -168,11 +168,13 @@ client.query(getuser,function(err,result){
 
 //ホストからキャンセルの0か、許可の1を受け取ってそれをゲストユーザーへ返す
 socket.on('answer',function(data){
+console.log("success");
 io.sockets.emit('answer_back',data)
 });
 
 //ゲストがお店にQRでチェックインしたときに1を受け取りそれをホスト側へ送る
 socket.on('gcheck',function(data){
+conosole.log("success");
 io.sockets.emit('gcheck_back',data)
 });
 
@@ -192,6 +194,7 @@ client.query(update);
 var hyokainfo = "insert into hyokainfo value ("+data.senduserid+","+recieveuserid+","+data.comment+","+data.nowhyoka+");"
 
 io.sockets.emit("end","success");
+console.log("success");
 });
 });
 
