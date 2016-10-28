@@ -155,7 +155,7 @@ io.sockets.on( 'connection', function( socket ) {
 
 //ゲストが参加ボタンをおしてからホストへ情報を送るまで
 socket.on('decide',function(data){
- var getuser= "select user_id,name,hyoka from users where user_id ="+data.g_userid+";"
+ var getuser= "select user_id,name,hyoka from users where user_id ="+data+";"
 var guser = new Object();
 client.query(getuser,function(err,result){
  guser.userid = result.row[0].user_id;
@@ -173,7 +173,7 @@ io.sockets.emit('answer_back',data)
 
 //ゲストがお店にQRでチェックインしたときに1を受け取りそれをホスト側へ送る
 socket.on('gcheck',function(data){
-io.sockets.emit('gcheck_alart',data)
+io.sockets.emit('gcheck_back',data)
 });
 
 //最後の評価
@@ -181,7 +181,7 @@ socket.on('sethyoka',function(data){
 var gethyoka = "select hyoka_sum, hyoka_times from users where user_id= "+data.recieveuserid+";"
 
 client.query(gethyoka,function(result){
-var sum = result.row[0].hyoka_sum + data.hyoka;
+var sum = result.row[0].hyoka_sum + data.nowhyoka;
 var times = result.row[0].hyoka_times + 1;
  
 var newhyoka = Math.round(sum/times);
@@ -189,7 +189,7 @@ var update = "update users set hyoka_sum = "+sum+", hyoka_times = "+times+", hyo
 
 client.query(update);
 
-var hyokainfo = "insert into hyokainfo value ("+data.senduserid+","+reciveuserid+","+data.comment+","+data.nowhyoka+");"
+var hyokainfo = "insert into hyokainfo value ("+data.senduserid+","+recieveuserid+","+data.comment+","+data.nowhyoka+");"
 
 io.sockets.emit("end","success");
 });
