@@ -174,7 +174,7 @@ io.sockets.emit('answer_back',data)
 
 //ゲストがお店にQRでチェックインしたときに1を受け取りそれをホスト側へ送る
 socket.on('gcheck',function(data){
-conosole.log("success");
+console.log("success");
 io.sockets.emit('gcheck_back',data)
 });
 
