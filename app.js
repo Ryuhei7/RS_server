@@ -94,29 +94,32 @@ io.sockets.on( 'connection', function( socket ) {
     socket.on( 'sharetable_list', function() {
       var table_info = "select share_id, title, category_id, explain from events;"
 
+     var shop_info = "select shop_name from shops;"
       client.query(table_info, function(err,info){
+       client.query(shop_info, function(err, sinfo){
         console.log(info.rows.length);
 
-        var i = info.rows.length-1|0;
-        var m = info.rows.length|0;
+        var i = info.rows.length-1;
+        var m = info.rows.length;
         var n = 0; 
-        var list = new Object();
         var arraylist = new Array();
         while(i>=m-10){  
           console.log("share_id="+info.rows[i].share_id+"title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
-          list.shareid = info.rows[i].share_id; 
-          list.title = info.rows[i].title;
-          list.category_id = info.rows[i].category_id;
-          list.explain = info.rows[i].explain;
-          arraylist[n] = list;
+          arraylist[n] = new Object();
+          arraylist[n].shareid = info.rows[i].share_id; 
+          arraylist[n].title = info.rows[i].title;
+          arraylist[n].category_id = info.rows[i].category_id|0;
+          arraylist[n].explain = info.rows[i].explain;
+          arraylist[n].shopname = sinfo.rows[0].shop_name;
+          //arraylist[n] = list;
           i=(i-1)|0;
-          n=(n+1)|0;
+          //console.log(arraylist[n].title);
+          n= n + 1;
         }
-        console.log(arraylist[9].title);
         io.sockets.emit('sharetable_list_back', arraylist);
       });
     });
-
+  });
 
 
      //クライアントでリストのどれかを選ばれたときに詳細を渡す
@@ -134,7 +137,8 @@ io.sockets.on( 'connection', function( socket ) {
            infoback.huserid = res_h_user.rows[0].user_id;
            infoback.hyoka =  res_h_user.rows[0].hyoka;
            infoback.title = res_detail.rows[0].title;
-           infoback.endtime = res_detail.rows[0].endtime; 
+           infoback.category = res_detail.rows[0].category_id;
+           infoback.endtime = res_detail.rows[0].end_time; 
            infoback.explain = res_detail.rows[0].explain;
            infoback.seatinfo = res_detail.rows[0].seatinfo;
            infoback.shop_address = res_shop.rows[0].address;
@@ -142,11 +146,64 @@ io.sockets.on( 'connection', function( socket ) {
            infoback.shop_x = res_shop.rows[0].y;
            infoback.shop_y =res_shop.rows[0].x;
            console.log("success");
+          console.log(infoback.endtime);
            io.sockets.emit('detail_back',infoback);
           });
         });
       });
     });
+
+//ゲストが参加ボタンをおしてからホストへ情報を送るまで
+socket.on('decide',function(data){
+ var getuser= "select user_id,name,hyoka from users where user_id =2;"
+var guser = new Object();
+client.query(getuser,function(err,result){
+ guser.userid = result.rows[0].user_id;
+ guser.name = result.rows[0].name;
+ guser.hyoka = result.rows[0].hyoka;
+ console.log("success");
+ io.sockets.emit('decide_back',guser);
+});
+});
+
+//ホストからキャンセルの0か、許可の1を受け取ってそれをゲストユーザーへ返す
+socket.on('answer',function(data){
+console.log("success");
+io.sockets.emit('answer_back',data)
+});
+
+//ゲストがお店にQRでチェックインしたときに1を受け取りそれをホスト側へ送る
+socket.on('gcheck',function(data){
+console.log("success");
+io.sockets.emit('gcheck_back',data)
+});
+
+//最後の評価
+socket.on('sethyoka',function(data){
+var gethyoka = "select hyoka_sum, hyoka_times from users where user_id= "+data.recieveuserid+";"
+
+client.query(gethyoka,function(result){
+var sum = result.row[0].hyoka_sum + data.nowhyoka;
+var times = result.row[0].hyoka_times + 1;
+ 
+var newhyoka = Math.round(sum/times);
+var update = "update users set hyoka_sum = "+sum+", hyoka_times = "+times+", hyoka = "+newhyoka+" where user_id = "+data.recieveuserid+";"
+
+client.query(update);
+
+var hyokainfo = "insert into hyokainfo value ("+data.senduserid+","+recieveuserid+","+data.comment+","+data.nowhyoka+");"
+
+io.sockets.emit("end","success");
+console.log("success");
+});
+});
+
+
+
+
+
+
+
 
     //Category List
     socket.on( 'categorylist', function() {
