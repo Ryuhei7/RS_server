@@ -170,14 +170,15 @@ pg.connect(connect_db, function(err, client){
 var getuser= "select user_id,name,hyoka from users where user_id =2;"
 var guser = new Object();
 client.query(getuser,function(err,result){
+console.log(data[0]);
 var sockethost = "select socket_host from events where shere_id = "+data[0]+";"
 client.query(sockethost,function(err,host){ 
 guser.userid = result.rows[0].user_id;
  guser.name = result.rows[0].name;
  guser.hyoka = result.rows[0].hyoka;
  console.log("success");
-console.log(host); 
-io.sockets.to(host).emit('decide_back',guser);
+console.log(host.rows[0].socket_host); 
+io.sockets.to(host.rows[0].socket_host).emit('decide_back',guser);
 });
 });
 });
