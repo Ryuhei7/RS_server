@@ -2,7 +2,7 @@
 var socketio = require( 'socket.io' ); // Socket.IOモジュール読み込み
 var fs = require( 'fs' ); // ファイル入出力モジュール読み込み
 var pg = require( 'pg' );
-
+var id;
 // ポート固定でHTTPサーバーを立てる
 var server = http.createServer( function( req, res ) {
   //もしURLにファイル名がないならばindex.htmlに飛ばすように
@@ -42,7 +42,7 @@ var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-16
 
     //Socket.IO Test
     socket.on( 'test', function( data ) {
-      var id = socket.id;
+      id = socket.id;
       pg.connect(connect_db, function(err, client){
       // サーバーからクライアントへ メッセージを送り返し
       io.sockets.to(id).emit( 'test_back', data );
@@ -88,7 +88,8 @@ var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-16
           var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time,seatinfo) values ("+ share_max +","+source.shopid+","+source.tableid+",'"+source.title+"',"+source.category_id+",'"+source.explain+"',"+source.userid+",'"+source.endtime+"',"+source.seatinfo+");"
           console.log(insert_share);
           client.query(insert_share);
-          io.sockets.emit('sharetable_start_back', share_max);
+          id  = socket.id;
+          io.sockets.to(id).emit('sharetable_start_back', share_max);
         });
       });
      });
@@ -96,6 +97,7 @@ var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-16
 
     //ShareTableList の一覧を出力
     socket.on( 'sharetable_list', function() {
+     id = socket.id; 
      pg.connect(connect_db, function(err, client){ 
      var table_info = "select share_id, title, category_id, explain from events;"
 
@@ -121,7 +123,7 @@ var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-16
           //console.log(arraylist[n].title);
           n= n + 1;
         }
-        io.sockets.emit('sharetable_list_back', arraylist);
+        io.sockets.to(id).emit('sharetable_list_back', arraylist);
       });
     });
    });
@@ -130,6 +132,7 @@ var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-16
 
      //クライアントでリストのどれかを選ばれたときに詳細を渡す
      socket.on('detail',function (id){
+     id = socket.id;
     pg.connect(connect_db, function(err, client){
         console.log("受信");
         var infoback = new Object();
@@ -154,7 +157,7 @@ var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-16
            infoback.shop_y =res_shop.rows[0].x;
            console.log("success");
           console.log(infoback.endtime);
-           io.sockets.emit('detail_back',infoback);
+           io.sockets.to(id).emit('detail_back',infoback);
           });
         });
       });
@@ -163,6 +166,7 @@ var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-16
 
 //ゲストが参加ボタンをおしてからホストへ情報を送るまで
 socket.on('decide',function(data){
+id = socket.id;
 pg.connect(connect_db, function(err, client){ 
 var getuser= "select user_id,name,hyoka from users where user_id =2;"
 var guser = new Object();
@@ -171,29 +175,32 @@ client.query(getuser,function(err,result){
  guser.name = result.rows[0].name;
  guser.hyoka = result.rows[0].hyoka;
  console.log("success");
- io.sockets.emit('decide_back',guser);
+ io.sockets.to(id).emit('decide_back',guser);
 });
 });
 });
 
 //ホストからキャンセルの0か、許可の1を受け取ってそれをゲストユーザーへ返す
 socket.on('answer',function(data){
+id = socket.id;
 pg.connect(connect_db, function(err, client){
 console.log("success");
-io.sockets.emit('answer_back',data)
+io.sockets.to(id).emit('answer_back',data)
 });
 });
 
 //ゲストがお店にQRでチェックインしたときに1を受け取りそれをホスト側へ送る
 socket.on('gcheck',function(data){
+id = socket.id;
 pg.connect(connect_db, function(err, client){
 console.log("success");
-io.sockets.emit('gcheck_back',data)
+io.sockets.to(id).emit('gcheck_back',data)
 });
 });
 
 //最後の評価
 socket.on('sethyoka',function(data){
+id = socket.id;
 pg.connect(connect_db, function(err, client){
 var gethyoka = "select hyoka_sum, hyoka_times from users where user_id= "+data.recieveuserid+";"
 
@@ -208,7 +215,7 @@ client.query(update);
 
 var hyokainfo = "insert into hyokainfo value ("+data.senduserid+","+recieveuserid+","+data.comment+","+data.nowhyoka+");"
 
-io.sockets.emit("end","success");
+io.sockets.to(id).emit("end","success");
 console.log("success");
 });
 });
