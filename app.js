@@ -177,8 +177,7 @@ guser.userid = result.rows[0].user_id;
  guser.name = result.rows[0].name;
  guser.hyoka = result.rows[0].hyoka;
  console.log("success");
-console.log(host.rows[0]); 
-io.sockets.to(host.rows[0].socket_host).emit('decide_back',guser);
+io.sockets.emit('decide_back',guser);
 });
 });
 });
@@ -189,7 +188,7 @@ socket.on('answer',function(data){
 id = socket.id;
 pg.connect(connect_db, function(err, client){
 console.log("success");
-io.sockets.to(id).emit('answer_back',data)
+io.sockets.emit('answer_back',data)
 });
 });
 
@@ -198,7 +197,7 @@ socket.on('gcheck',function(data){
 id = socket.id;
 pg.connect(connect_db, function(err, client){
 console.log("success");
-io.sockets.to(id).emit('gcheck_back',data)
+io.sockets.emit('gcheck_back',data)
 });
 });
 
