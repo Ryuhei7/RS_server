@@ -42,9 +42,10 @@ var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-16
 
     //Socket.IO Test
     socket.on( 'test', function( data ) {
+      var id = socket.id;
       pg.connect(connect_db, function(err, client){
       // サーバーからクライアントへ メッセージを送り返し
-      io.sockets.emit( 'test_back', data );
+      io.sockets.to(id).emit( 'test_back', data );
       //console.log(datta.value);
       console.log(data);
       });
