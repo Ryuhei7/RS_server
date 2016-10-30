@@ -33,27 +33,27 @@ var io = socketio.listen( server );
 //データベースの設定
 var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-163-248-218.compute-1.amazonaws.com:5432/d2pggvvc541c3";
 
-// 接続確立後の通信処理部分を定義
-io.sockets.on( 'connection', function( socket ) {
-  console.log("connect server");
 
-  //データベースに接続 
-  pg.connect(connect_db, function(err, client){
-    console.log("connect db");
+// 接続確立後の通信処理部分を定義
+   io.sockets.on( 'connection', function( socket ) {
+   console.log("connect server");
 
     // クライアントからサーバーへ メッセージ送信ハンドラ（自分を含む全員宛に送る）
 
     //Socket.IO Test
     socket.on( 'test', function( data ) {
+      pg.connect(connect_db, function(err, client){
       // サーバーからクライアントへ メッセージを送り返し
       io.sockets.emit( 'test_back', data );
       //console.log(datta.value);
       console.log(data);
+      });
     });
 
 
     //QRCode Maker
     socket.on( 'qrcodemaker', function( source ) {
+      pg.connect(connect_db, function(err, client){ 
       data = source.shopid + "," + source.tableid + '\n';
       // /csv/ShopList.csv に保存
       fs.appendFile(__dirname + "/csv/ShopList.csv", data , 'utf-8', function(err){
@@ -65,13 +65,15 @@ io.sockets.on( 'connection', function( socket ) {
         io.sockets.emit( 'qrcodemaker_res', "complete" );
       });
       console.log(data);
-    });
+    });  
+  });
 
 
     //ShareTable List
     //ShareTableList に新しくテーブルを追加
     socket.on( 'sharetable_start', function( source ) {
-      console.log("recieved sharetable_start");
+      pg.connect(connect_db, function(err, client){
+       console.log("recieved sharetable_start");
 
       var get_max = "select share_id from events;"    
 
@@ -87,12 +89,14 @@ io.sockets.on( 'connection', function( socket ) {
           client.query(insert_share);
           io.sockets.emit('sharetable_start_back', share_max);
         });
+      });
      });
 
 
     //ShareTableList の一覧を出力
     socket.on( 'sharetable_list', function() {
-      var table_info = "select share_id, title, category_id, explain from events;"
+     pg.connect(connect_db, function(err, client){ 
+     var table_info = "select share_id, title, category_id, explain from events;"
 
      var shop_info = "select shop_name from shops;"
       client.query(table_info, function(err,info){
@@ -119,12 +123,14 @@ io.sockets.on( 'connection', function( socket ) {
         io.sockets.emit('sharetable_list_back', arraylist);
       });
     });
+   });
   });
 
 
      //クライアントでリストのどれかを選ばれたときに詳細を渡す
      socket.on('detail',function (id){
-       console.log("受信");
+    pg.connect(connect_db, function(err, client){
+        console.log("受信");
         var infoback = new Object();
         var get_detail = "select * from events where share_id = "+id+";"
          client.query(get_detail, function(err,res_detail){
@@ -151,11 +157,13 @@ io.sockets.on( 'connection', function( socket ) {
           });
         });
       });
+     });
     });
 
 //ゲストが参加ボタンをおしてからホストへ情報を送るまで
 socket.on('decide',function(data){
- var getuser= "select user_id,name,hyoka from users where user_id =2;"
+pg.connect(connect_db, function(err, client){ 
+var getuser= "select user_id,name,hyoka from users where user_id =2;"
 var guser = new Object();
 client.query(getuser,function(err,result){
  guser.userid = result.rows[0].user_id;
@@ -165,21 +173,27 @@ client.query(getuser,function(err,result){
  io.sockets.emit('decide_back',guser);
 });
 });
+});
 
 //ホストからキャンセルの0か、許可の1を受け取ってそれをゲストユーザーへ返す
 socket.on('answer',function(data){
+pg.connect(connect_db, function(err, client){
 console.log("success");
 io.sockets.emit('answer_back',data)
+});
 });
 
 //ゲストがお店にQRでチェックインしたときに1を受け取りそれをホスト側へ送る
 socket.on('gcheck',function(data){
+pg.connect(connect_db, function(err, client){
 console.log("success");
 io.sockets.emit('gcheck_back',data)
+});
 });
 
 //最後の評価
 socket.on('sethyoka',function(data){
+pg.connect(connect_db, function(err, client){
 var gethyoka = "select hyoka_sum, hyoka_times from users where user_id= "+data.recieveuserid+";"
 
 client.query(gethyoka,function(result){
@@ -197,17 +211,11 @@ io.sockets.emit("end","success");
 console.log("success");
 });
 });
+});
 
-
-
-
-
-
-
-
-    //Category List
-    socket.on( 'categorylist', function() {
-
+//Category List
+socket.on( 'categorylist', function() {
+pg.connect(connect_db, function(err, client){
       // /csv/CategoryList.csv を見に行く
       // fs.readFileSync(process.argv[2], 'utf8').split('\n').length - 1
       fs.readFile(__dirname + "/csv/CategoryList.csv", 'utf-8', function(err,source){
@@ -227,10 +235,10 @@ console.log("success");
       });
 
       //console.log();
+     });
     });
 
-
-  });
+ 
 });
 
 
