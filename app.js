@@ -84,8 +84,8 @@ var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-16
           console.log(max);
           var  share_max = max.rows.length+1;
           console.log(share_max); 
-
-          var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time,seatinfo) values ("+ share_max +","+source.shopid+","+source.tableid+",'"+source.title+"',"+source.category_id+",'"+source.explain+"',"+source.userid+",'"+source.endtime+"',"+source.seatinfo+");"
+          var socketid = socket.id;
+          var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time,seatinfo,socket_host) values ("+ share_max +","+source.shopid+","+source.tableid+",'"+source.title+"',"+source.category_id+",'"+source.explain+"',"+source.userid+",'"+source.endtime+"',"+source.seatinfo+",'"+socketid+"');"
           console.log(insert_share);
           client.query(insert_share);
           id  = socket.id;
@@ -170,11 +170,12 @@ pg.connect(connect_db, function(err, client){
 var getuser= "select user_id,name,hyoka from users where user_id =2;"
 var guser = new Object();
 client.query(getuser,function(err,result){
+var sockethost = "select socket_host from events where shere_id = "+data[0]+";"
  guser.userid = result.rows[0].user_id;
  guser.name = result.rows[0].name;
  guser.hyoka = result.rows[0].hyoka;
  console.log("success");
- id = sockets.id;
+ id = sockethost;
  io.sockets.to(id).emit('decide_back',guser);
 });
 });
