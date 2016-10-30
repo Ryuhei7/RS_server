@@ -97,7 +97,6 @@ var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-16
 
     //ShareTableList の一覧を出力
     socket.on( 'sharetable_list', function() {
-     id = socket.id; 
      pg.connect(connect_db, function(err, client){ 
      var table_info = "select share_id, title, category_id, explain from events;"
 
@@ -123,6 +122,7 @@ var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-16
           //console.log(arraylist[n].title);
           n= n + 1;
         }
+        id = socket.id; 
         io.sockets.to(id).emit('sharetable_list_back', arraylist);
       });
     });
@@ -132,7 +132,6 @@ var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-16
 
      //クライアントでリストのどれかを選ばれたときに詳細を渡す
      socket.on('detail',function (id){
-     id = socket.id;
     pg.connect(connect_db, function(err, client){
         console.log("受信");
         var infoback = new Object();
@@ -157,6 +156,7 @@ var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-16
            infoback.shop_y =res_shop.rows[0].x;
            console.log("success");
           console.log(infoback.endtime);
+           id = socket.id;
            io.sockets.to(id).emit('detail_back',infoback);
           });
         });
@@ -166,7 +166,6 @@ var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-16
 
 //ゲストが参加ボタンをおしてからホストへ情報を送るまで
 socket.on('decide',function(data){
-id = socket.id;
 pg.connect(connect_db, function(err, client){ 
 var getuser= "select user_id,name,hyoka from users where user_id =2;"
 var guser = new Object();
@@ -175,6 +174,7 @@ client.query(getuser,function(err,result){
  guser.name = result.rows[0].name;
  guser.hyoka = result.rows[0].hyoka;
  console.log("success");
+ id = sockets.id;
  io.sockets.to(id).emit('decide_back',guser);
 });
 });
@@ -200,7 +200,6 @@ io.sockets.to(id).emit('gcheck_back',data)
 
 //最後の評価
 socket.on('sethyoka',function(data){
-id = socket.id;
 pg.connect(connect_db, function(err, client){
 var gethyoka = "select hyoka_sum, hyoka_times from users where user_id= "+data.recieveuserid+";"
 
@@ -214,7 +213,7 @@ var update = "update users set hyoka_sum = "+sum+", hyoka_times = "+times+", hyo
 client.query(update);
 
 var hyokainfo = "insert into hyokainfo value ("+data.senduserid+","+recieveuserid+","+data.comment+","+data.nowhyoka+");"
-
+id = socket.id;
 io.sockets.to(id).emit("end","success");
 console.log("success");
 });
