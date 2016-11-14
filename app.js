@@ -1,4 +1,6 @@
-﻿var http = require( 'http' ); // HTTPモジュール読み込み
+﻿//MAEDAADD 61-81 Chat
+
+var http = require( 'http' ); // HTTPモジュール読み込み
 var socketio = require( 'socket.io' ); // Socket.IOモジュール読み込み
 var fs = require( 'fs' ); // ファイル入出力モジュール読み込み
 var pg = require( 'pg' );
@@ -23,23 +25,25 @@ var server = http.createServer( function( req, res ) {
     res.end();
   });
 });
-server.listen(process.env.PORT)
+server.listen(3000)
 
 
 
 // サーバーをソケットに紐付ける
 var io = socketio.listen( server );
 
+var userHash = {};
+
 //データベースの設定
-var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-163-248-218.compute-1.amazonaws.com:5432/d2pggvvc541c3";
+//var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-163-248-218.compute-1.amazonaws.com:5432/d2pggvvc541c3";
 
 // 接続確立後の通信処理部分を定義
 io.sockets.on( 'connection', function( socket ) {
   console.log("connect server");
 
   //データベースに接続 
-  pg.connect(connect_db, function(err, client){
-    console.log("connect db");
+//  pg.connect(connect_db, function(err, client){
+//    console.log("connect db");
 
     // クライアントからサーバーへ メッセージ送信ハンドラ（自分を含む全員宛に送る）
 
@@ -52,7 +56,96 @@ io.sockets.on( 'connection', function( socket ) {
     });
 
 
-    //QRCode Maker
+
+
+//MAEDA ADD
+//Chat
+    
+    console.log(socket.id);
+   
+    // クライアントからサーバーへ メッセージ送信ハンドラ（自分を含む全員宛に送る）
+    socket.on( 'c2s_message', function( data ) {
+        // サーバーからクライアントへ メッセージを送り返し
+        io.sockets.emit( 's2c_message', { value : data.value } );
+    });
+
+    // クライアントからサーバーへ メッセージ送信ハンドラ（自分以外の全員宛に送る）
+    socket.on( 'c2s_broadcast', function( data ) {
+        // サーバーからクライアントへ メッセージを送り返し
+        socket.broadcast.emit( 's2c_message', { value : data.value } );
+        console.log("brodcast");
+    }); 
+
+    // クライアントからサーバーへ メッセージ送信ハンドラ（特定ユーザに送る）
+    socket.on('c2s_personal', function(data) {
+        // サーバーからクライアントへ メッセージを送り返し
+        socket.to(socket.id).emit('s2c_message', { value : data.value } ); 
+        console.log("personal");
+    });
+
+//リスト画面_シェア側情報をクライアント側に送信、更新したら再送信
+  socket.on( 'sharetable_list', function() {
+     var table_info = "select share_id, title, category_id, explain from events;"
+
+     var shop_info = "select shop_name from shops;"
+      client.query(table_info, function(err,info){
+       client.query(shop_info, function(err, sinfo){
+        console.log(info.rows.length);
+
+        var i = info.rows.length-1;
+        var m = info.rows.length;
+        var n = 0; 
+        var arraylist = new Array();
+        while(i>=m-10){  
+          console.log("share_id="+info.rows[i].share_id+"title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
+          arraylist[n] = new Object();
+          arraylist[n].shareid = info.rows[i].share_id; 
+          arraylist[n].title = info.rows[i].title;
+          arraylist[n].category_id = info.rows[i].category_id|0;
+          arraylist[n].explain = info.rows[i].explain;
+          arraylist[n].shopname = sinfo.rows[0].shop_name;
+          //arraylist[n] = list;
+          i=(i-1)|0;
+          //console.log(arraylist[n].title);
+          n= n + 1;
+        }
+        io.sockets.emit('sharetable_list_back', arraylist);
+      });
+    });
+  });
+
+  socket.on("reload_sharetable_list", function() {
+     var table_info = "select share_id, title, category_id, explain from events;"
+
+     var shop_info = "select shop_name from shops;"
+      client.query(table_info, function(err,info){
+       client.query(shop_info, function(err, sinfo){
+        console.log(info.rows.length);
+
+        var i = info.rows.length-1;
+        var m = info.rows.length;
+        var n = 0; 
+        var arraylist_re = new Array();
+        while(i>=m-10){  
+          console.log("share_id="+info.rows[i].share_id+"title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
+          arraylist_re[n] = new Object();
+          arraylist_re[n].shareid = info.rows[i].share_id; 
+          arraylist_re[n].title = info.rows[i].title;
+          arraylist_re[n].category_id = info.rows[i].category_id|0;
+          arraylist_re[n].explain = info.rows[i].explain;
+          arraylist_re[n].shopname = sinfo.rows[0].shop_name;
+          //arraylist[n] = list;
+          i=(i-1)|0;
+          //console.log(arraylist[n].title);
+          n= n + 1;
+        }
+        io.sockets.emit('reload_sharetable_list_back', arraylist_re);
+      });
+     });
+  });
+
+
+//QRCode Maker
     socket.on( 'qrcodemaker', function( source ) {
       data = source.shopid + "," + source.tableid + '\n';
       // /csv/ShopList.csv に保存
@@ -230,7 +323,7 @@ console.log("success");
     });
 
 
-  });
+//  });
 });
 
 
