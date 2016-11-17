@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>Revive Seat - Decide test</title>
+  <link rel="stylesheet"
+href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h3><a href="index.html"><|戻る</a></h3>
+    <h1>Socket.IO Test</h1>
+        </div>
+          <button id="decide"  class="btn btn-primary">受信</button>
+      </form>
+
+      <div id="chatLogs"></div>
+  </div>
+
+
+    
+    <script type="text/javascript">
+      var socket = io.connect();
+      
+      socket.on("decide_back", function(data){appendMsg(data)});
+      
+      function appendMsg(data) {
+        $("#chatLogs").append("<div>" +data.userid+" "+data.name+" "+data.hyoka+"</div>");
+      }
+    
+      $("#decide").click(function(e){
+        var test = new Array();
+       test[0]=9;
+       test[1]=1;
+        socket.emit("decide", test);
+        e.preventDefault();
+      });        
+    </script>
+
+
+</body>
+</html>
+

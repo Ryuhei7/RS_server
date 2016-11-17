@@ -168,17 +168,17 @@ var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-16
 socket.on('decide',function(data){
 pg.connect(connect_db, function(err, client){ 
 var getuser= "select user_id,name,hyoka from users where user_id =2;"
-var guser = new Object();
 client.query(getuser,function(err,result){
 console.log(data[0]);
 var sockethost = "select socket_host from events where shere_id = "+data[0]+";"
 client.query(sockethost,function(err,host){ 
+var guser= new Object();
 guser.userid = result.rows[0].user_id;
  guser.name = result.rows[0].name;
  guser.hyoka = result.rows[0].hyoka;
  console.log("success");
 console.log(host.rows[0]); 
-io.sockets.to(host.rows[0].socket_host).emit('decide_back',guser);
+io.sockets.emit('decide_back',guser);
 });
 });
 });
@@ -224,43 +224,52 @@ console.log("success");
 });
 });
 
-//Category List
-socket.on( 'categorylist', function() {
-pg.connect(connect_db, function(err, client){
-      // /csv/CategoryList.csv を見に行く
-      // fs.readFileSync(process.argv[2], 'utf8').split('\n').length - 1
-      fs.readFile(__dirname + "/csv/CategoryList.csv", 'utf-8', function(err,source){
-        //もし見つからなかったらエラーを返す
-        if(err){
-          io.sockets.emit( 'categorylist_res', "error" );
-        }
-        //見つかったらcompleteを返す
-        //var yenN = source.split('\n');
-        var resultString = source.split(",");
-        //var listnum = resultString.length-1;
-
-        io.sockets.emit( 'categorylist_res', "complete" );
-        io.sockets.emit( 'categorylist_back' , resultString);
-
-        //console.log(listnum);
-      });
-
-      //console.log();
-     });
-    });
-
- 
+socket.on('menu_request',function(data){
+pg.connect(connect_db,function(err,client){
+var menu = "select * from menu where id = "+data+";"
+client.query(menu,function(data){
+var array = new Array();
+var max = data.rows.length-1;
+var i = 0;
+while(i<max){
+array[i] = new Object();
+array[i].menu = data.rows[i].name;
+array[i].url = data.rows[i].url;
+array[i].price = data.rows[i].price;
+i=i+1|0;
+}
+socket.emit('menu_list',array);
+});
+});
 });
 
+socket.on('newuser',function(data){
+pg.connect(connect_db,function(err,client){
+var gmax = "select user_id from users;"
+client.query(gmax,function(data2){
+max = data2.rows.length+1;
+var add = "insert into users(user_id, hyoka, name, point, password, hyoka_sum, hyoka_times) values ("+max+",0,'"+data.username+"',100,'"+data.password+"',0,0);"
+client.query(add);
+socket.to(socket.id).emit("newuser_back",gmax);
+});
+});
+});
 
+socket.on("load",function(data){
+var check = "select scheck,share_id from events where scheck = 1 and (h_user_id = "+data+" or g_user_id = "+data+");"
+client.query(check,function(data2){
+if(data2.rows[0].scheck==1){
+var sc1 = new Object();
+sc1.shrecheck = data2.rows[0].scheck;
+sc1.shareid = data2.rows[0].scheck; 
+socket.to(socket.id).emit("load_back",sc1);
+}else{
+var sc2 = new Object();
+sc2.shrecheck = 0;
+sc2.shareid = 0;
+socket.to(socket.id).emit("load_back",sc2);
+}
+});
+});
 
-/*
-// クライアントからサーバーへ メッセージ送信ハンドラ（自分以外の全員宛に送る）
-    socket.on( 'c2s_broadcast', function( data ) {
-// サーバーからクライアントへ メッセージを送り返し
-  socket.broadcast.emit( 's2c_message', { value : data.value } );
-    });
-    */
-
-// http://engineer.recruit-lifestyle.co.jp/techblog/2015-07-29-node4/
-
+});
