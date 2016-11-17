@@ -177,7 +177,7 @@ guser.userid = result.rows[0].user_id;
  guser.name = result.rows[0].name;
  guser.hyoka = result.rows[0].hyoka;
  console.log("success");
-console.log(host.rows[0]); 
+console.log(guser.name); 
 io.sockets.emit('decide_back',guser);
 });
 });
