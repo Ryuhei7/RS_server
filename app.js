@@ -39,7 +39,6 @@ var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-16
    console.log("connect server");
 
     // クライアントからサーバーへ メッセージ送信ハンドラ（自分を含む全員宛に送る）
-
     //Socket.IO Test
     socket.on( 'test', function( data ) {
       id = socket.id;
