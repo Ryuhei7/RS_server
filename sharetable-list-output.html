@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>Revive Seat - QRCode Maker</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h3><a href="index.html"><|戻る</a>　　　<a href="sharetable-list-add.html">リストに登録する|></a></h3>
+      <h1>ShareTable List</h1>
+      <button id="Reception" class="btn btn-primary">受信</button>
+      <br>
+      <div id="res"></div>
+      <br>
+      <div id="list"></div>
+      <br>
+    </div>
+    <script type="text/javascript">
+//ソケット通信の準備
+var socket = io.connect();
+
+//サーバにデータを送る関数
+$("#Reception").click(function(e){
+ socket.emit("sharetable_list");
+e.preventDefault();
+});
+
+socket.on("sharetable_list_back", function(res){
+for(var i=0; i<10;i=i+1){ 
+   $("#res").html(res[i].title+" "+res[i].category_id+" "+res[i].explain);
+}
+});
+
+/*
+    socket.on("sharetable_list_back", function(source){getShareTable(source)});
+    function getShareTable(source) {
+      $("#list").html("");
+      for (var i=0; i<source.length; i++){
+        var data = source[i].title + " , " + source[i].category + " , " + source[i].endtime + " , " + source[i].explain + " , " + source[i].shopid + " , " + source[i].tableid + " , " + source[i].userid + "<br>";
+        $("#list").append(data);
+      }
+    }
+  }
+*/
+
+    </script>
+  </body>
+</html>

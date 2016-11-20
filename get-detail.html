@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>Revive Seat - Detail test</title>
+  <link rel="stylesheet"
+href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h3><a href="index.html"><|戻る</a></h3>
+    <h1>Socket.IO Test</h1>
+        </div>
+          <button id="detail"  class="btn btn-primary">受信</button>
+      </form>
+
+      <div id="chatLogs"></div>
+  </div>
+
+
+    
+    <script type="text/javascript">
+      var socket = io.connect();
+      
+      socket.on("detail_back", function(data){appendMsg(data)});
+      
+      function appendMsg(data) {
+        $("#chatLogs").append("<div>" + data.hname+ " "+ data.huserid+" " + data.hyoka+" " + data.title+" "+ data.explain+" " + data.shop_name + "</div>");
+      }
+    
+      $("#detail").click(function(e){
+        var message = 1|0;
+        socket.emit("detail", message);
+        e.preventDefault();
+      });        
+    </script>
+
+
+</body>
+</html>
+

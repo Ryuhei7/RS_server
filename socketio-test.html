@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>Revive Seat - Socket.IO Test</title>
+  <link rel="stylesheet"
+href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h3><a href="index.html"><|戻る</a></h3>
+    <h1>Socket.IO Test</h1>
+      <form class="form-inline">
+        <div class="form-group">
+          <label for="msgForm">メッセージ：</label>
+            <input type="text" class="form-control" id="msgForm">
+        </div>
+          <button type="submit" class="btn btn-primary">送信</button>
+      </form>
+
+      <div id="chatLogs"></div>
+  </div>
+
+
+    
+    <script type="text/javascript">
+      var socket = io.connect();
+      
+      socket.on("test_back", function(data){appendMsg(data)});
+      
+      function appendMsg(data) {
+        $("#chatLogs").append("<div>" + data + "</div>");
+      }
+    
+      $("form").submit(function(e){
+       var message= $("#msgForm").val();
+        $("#msgForm").val('');
+        socket.emit("test", message);
+        e.preventDefault();
+      });        
+
+    </script>
+
+
+</body>
+</html>

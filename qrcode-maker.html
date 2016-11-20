@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>Revive Seat - QRCode Maker</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.qrcode.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h3><a href="index.html"><|戻る</a>　　　<a href="csv/ShopList.csv">登録されているリストを見る|></a></h3>
+      <h1>QRCode Maker</h1>
+      <form class="form-inline">
+        <div class="form-group">
+          <label for="shopid">店舗ID：</label>
+          <input type="text" class="form-control" id="shopid">
+          <br>
+          <label for="tableid">テーブルID：</label>
+          <input type="text" class="form-control" id="tableid">
+          <br>
+        </div><br>
+        <button type="submit" class="btn btn-primary">送信</button>
+      </form>
+      <br>
+      <div id="qrres"></div>
+      <br>
+      <div id="qrimg"></div>
+      <br>
+    </div>
+    <script type="text/javascript">
+//ソケット通信の準備
+var socket = io.connect();
+
+socket.on("qrcodemaker_res", function(data){
+  $("#qrres").html("");
+  $("#qrres").html(data);
+});
+
+//サーバにデータを送る関数
+$("form").submit(function(e){
+  //入力フィールドの内容を変数に代入
+  var message = new Object();
+  message.shopid = $("#shopid").val();
+  message.tableid = $("#tableid").val();
+
+  var qrtmp = message.shopid + "," + message.tableid;
+
+  // "qrcodemaker"というイベントに message という変数を送信
+  socket.emit("qrcodemaker", message);
+
+  $("#qrimg").html("");
+  $("#qrimg").qrcode(qrtmp);
+
+  //この関数の中断
+  e.preventDefault();
+});
+    </script>
+  </body>
+</html>

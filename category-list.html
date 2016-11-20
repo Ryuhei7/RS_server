@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>Revive Seat - Category List</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h3><a href="index.html"><|戻る</a>　　　<a href="csv/CategoryList.csv">登録されているリストを見る|></a></h3>
+      <h1>Category List</h1>
+      <button id="Reception" class="btn btn-primary">受信</button>
+      <br>
+      <div id="res"></div>
+      <br>
+      <div id="list"></div>
+      <br>
+    </div>
+    <script type="text/javascript">
+//ソケット通信の準備
+var socket = io.connect();
+
+//サーバにデータを送る関数
+$("#Reception").click(function(e){
+  socket.emit("categorylist");
+  socket.on("categorylist_res", function(res){getCategoryRes(res)});
+
+  function getCategoryRes(res) {
+    $("#res").html("");
+    $("#res").html(res);
+
+    socket.on("categorylist_back", function(data){getCategory(data)});
+
+    function getCategory(data) {
+      $("#list").html("");
+      for (var i=0 ; i<data.length ; i++){
+        $("#list").append(data[i] + "<br>");
+      }
+    }
+  }
+
+  //この関数の中断
+  e.preventDefault();
+});
+    </script>
+  </body>
+</html>
