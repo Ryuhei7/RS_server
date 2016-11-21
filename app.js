@@ -214,8 +214,7 @@ io.sockets.on( 'connection', function( socket ) {
 
         client.query(update);
         var hyokainfo = "insert into hyokainfo value ("+data.senduserid+","+recieveuserid+","+data.comment+","+data.nowhyoka+");"
-        id = socket.id;
-        io.sockets.to(id).emit("end","success");
+        //io.sockets.to(id).emit("end","success");
         console.log("success");
       });
     });
