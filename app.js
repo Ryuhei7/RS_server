@@ -39,7 +39,11 @@ var userHash = {};
 
 // 接続確立後の通信処理部分を定義
 io.sockets.on( 'connection', function( socket ) {
-  console.log("connect server");
+
+    var room = '';
+    var name = '';
+
+    console.log("connect server");
 
   //データベースに接続 
 //  pg.connect(connect_db, function(err, client){
@@ -60,28 +64,74 @@ io.sockets.on( 'connection', function( socket ) {
 
 //MAEDA ADD
 //Chat
-    
-    console.log(socket.id);
-   
-    // クライアントからサーバーへ メッセージ送信ハンドラ（自分を含む全員宛に送る）
-    socket.on( 'c2s_message', function( data ) {
-        // サーバーからクライアントへ メッセージを送り返し
-        io.sockets.emit( 's2c_message', { value : data.value } );
+ 
+// roomへの入室は、「socket.join(room名)」
+    socket.on('ctos_join', function(data) {
+        room = data.value;
+        socket.join(room);
+    });
+    // S05. client_to_serverイベント・データを受信する
+    socket.on('ctos', function(data) {
+        // S06. server_to_clientイベント・データを送信する
+        io.to(room).emit('stoc', {value : data.value});
+    });
+    // S07. client_to_server_broadcastイベント・データを受信し、送信元以外に送信する
+    socket.on('ctos_broadcast', function(data) {
+        socket.broadcast.to(room).emit('stoc', {value : data.value});
+    });
+    // S08. client_to_server_personalイベント・データを受信し、送信元のみに送信する
+    socket.on('ctos_personal', function(data) {
+        var id = socket.id;
+        name = data.value;
+        var personalMessage = "あなたは、" + name + "さんとして入室しました。"
+        io.to(id).emit('stoc', {value : personalMessage});
+    });
+    // S09. dicconnectイベントを受信し、退出メッセージを送信する
+    socket.on('disconnect', function() {
+        if (name == '') {
+            console.log("未入室のまま、どこかへ去っていきました。");
+        } else {
+            var endMessage = name + "さんが退出しました。"
+            io.to(room).emit('stoc', {value : endMessage});
+        }
+    });   
+
+
+    //Product List
+    socket.on( 'productlist', function() {
+
+      // /csv/ProductList.csv を見に行く
+      // fs.readFileSync(process.argv[2], 'utf8').split('\n').length - 1
+      fs.readFile(__dirname + "/csv/ProductList.csv", 'utf-8', function(err,source){
+        //もし見つからなかったらエラーを返す
+        if(err){
+          io.sockets.emit( 'productlist_res', "error" );
+        }
+        //見つかったらcompleteを返す
+        //var yenN = source.split('\n');
+        var resultString = source.split(",");
+        //var listnum = resultString.length-1;
+
+        io.sockets.emit( 'productlist_res', "complete" );
+        io.sockets.emit( 'productlist_back' , resultString);
+
+        //console.log(listnum);
+      });
+
+      //console.log();
     });
 
-    // クライアントからサーバーへ メッセージ送信ハンドラ（自分以外の全員宛に送る）
-    socket.on( 'c2s_broadcast', function( data ) {
-        // サーバーからクライアントへ メッセージを送り返し
-        socket.broadcast.emit( 's2c_message', { value : data.value } );
-        console.log("brodcast");
-    }); 
 
+/*
     // クライアントからサーバーへ メッセージ送信ハンドラ（特定ユーザに送る）
     socket.on('c2s_personal', function(data) {
-        // サーバーからクライアントへ メッセージを送り返し
-        socket.to(socket.id).emit('s2c_message', { value : data.value } ); 
-        console.log("personal");
+          // サーバーからクライアントへ メッセージを送り返し
+          socket.to(socket.id).emit('s2c_message', { value : data.value } ); 
+          console.log("success2");
     });
+*/
+
+
 
 //リスト画面_シェア側情報をクライアント側に送信、更新したら再送信
   socket.on( 'sharetable_list', function() {
