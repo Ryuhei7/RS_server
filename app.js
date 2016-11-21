@@ -94,7 +94,7 @@ io.sockets.on( 'connection', function( socket ) {
 
 
   //ShareTableList の一覧を出力
-  socket.on( 'sharetable_list', function() {
+  socket.on( 'sharetable_list', function(data) {
     pg.connect(connect_db, function(err, client){
       var table_info = "select share_id, title, category_id, explain from events;"
 
@@ -148,6 +148,7 @@ io.sockets.on( 'connection', function( socket ) {
             infoback.endtime = res_detail.rows[0].end_time;
             infoback.explain = res_detail.rows[0].explain;
             infoback.seatinfo = res_detail.rows[0].seatinfo;
+            infoback.seatnum = res_detail.rows[0].seatnum;
             infoback.shop_address = res_shop.rows[0].address;
             infoback.shop_name = res_shop.rows[0].shop_name;
             infoback.shop_x = res_shop.rows[0].y;
@@ -223,7 +224,6 @@ io.sockets.on( 'connection', function( socket ) {
       client.query(gethyoka,function(result){
         var sum = result.row[0].hyoka_sum + data.nowhyoka;
         var times = result.row[0].hyoka_times + 1;
-
         var newhyoka = Math.round(sum/times);
         var update = "update users set hyoka_sum = "+sum+", hyoka_times = "+times+", hyoka = "+newhyoka+" where user_id = "+data.recieveuserid+";"
 
