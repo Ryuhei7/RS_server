@@ -213,7 +213,6 @@ io.sockets.on( 'connection', function( socket ) {
         var update = "update users set hyoka_sum = "+sum+", hyoka_times = "+times+", hyoka = "+newhyoka+" where user_id = "+data.recieveuserid+";"
 
         client.query(update);
-
         var hyokainfo = "insert into hyokainfo value ("+data.senduserid+","+recieveuserid+","+data.comment+","+data.nowhyoka+");"
         id = socket.id;
         io.sockets.to(id).emit("end","success");
