@@ -177,7 +177,7 @@ io.sockets.on( 'connection', function( socket ) {
           console.log("success");
           console.log(guser.name);
           io.sockets.emit('decide_back',guser);
-        var inguest = "update events set g_user_id = "+result.rows[0].user_id+" where shere_id = "+data[0]+";"
+          var inguest = "update events set g_user_id = "+result.rows[0].user_id+" where shere_id = "+data[0]+";"
         });
       });
     });
@@ -201,17 +201,17 @@ io.sockets.on( 'connection', function( socket ) {
     });
   });
 
-socket.on('hyokauser',function(data){
-  pg.connect(connect_db, function(err, client){
-    var uid = "select h_user_id, g_user_id from events where share_id = "+data+";"
-    client.query(uid,function(data2){
-      var arr = new Array();
-      arr[0]=data2.rows[0].h_user_id;
-      arr[1]=data2.rows[0].g_user_id;
-      socket.to(socket.id).emit(hyokauser_back, arr);
+  socket.on('hyokauser',function(data){
+    pg.connect(connect_db, function(err, client){
+      var uid = "select h_user_id, g_user_id from events where share_id = "+data+";"
+      client.query(uid,function(data2){
+        var arr = new Array();
+        arr[0]=data2.rows[0].h_user_id;
+        arr[1]=data2.rows[0].g_user_id;
+        socket.to(socket.id).emit(hyokauser_back, arr);
+      });
     });
   });
-});
 
 
 
