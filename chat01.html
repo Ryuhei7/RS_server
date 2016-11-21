@@ -33,7 +33,7 @@
         var name = '';
  
         // C04. server_to_clientイベント・データを受信する
-        socket.on("stoc", function(data){appendMsg(data.value)});
+        socket.on("chat_send", function(data){appendMsg(data.value)});
         function appendMsg(text) {
             $("#chatLogs").append("<div>" + text + "</div>");
         }
@@ -45,15 +45,15 @@
             if (isEnter) {
               message = "[" + name + "]: " + message;
                 // C03. client_to_serverイベント・データを送信する
-                socket.emit("ctos", {value : message});
+                socket.emit("chat_reception", {value : message});
             } else {
                 name = message;
                 var entryMessage = name + "さんが入室しました。";
-                socket.emit("ctos_join", {value : selectRoom});
+                socket.emit("chat_reception_join", {value : selectRoom});
                 // C05. client_to_server_broadcastイベント・データを送信する
-                socket.emit("ctos_broadcast", {value : entryMessage});
+                socket.emit("chat_reception_broadcast", {value : entryMessage});
                 // C06. client_to_server_personalイベント・データを送信する
-                socket.emit("ctos_personal", {value : name});
+                socket.emit("chat_reception_personal", {value : name});
                 changeLabel();
             }
             e.preventDefault();

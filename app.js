@@ -66,33 +66,33 @@ io.sockets.on( 'connection', function( socket ) {
 //Chat
  
 // roomへの入室は、「socket.join(room名)」
-    socket.on('ctos_join', function(data) {
+    socket.on('chat_reception_join', function(data) {
         room = data.value;
         socket.join(room);
     });
-    // S05. client_to_serverイベント・データを受信する
-    socket.on('ctos', function(data) {
+    //  ctosイベント・データを受信する
+    socket.on('chat_reception', function(data) {
         // S06. server_to_clientイベント・データを送信する
-        io.to(room).emit('stoc', {value : data.value});
+        io.to(room).emit('chat_send', {value : data.value});
     });
-    // S07. client_to_server_broadcastイベント・データを受信し、送信元以外に送信する
-    socket.on('ctos_broadcast', function(data) {
-        socket.broadcast.to(room).emit('stoc', {value : data.value});
+    //  ctos_broadcastイベント・データを受信し、送信元以外に送信する
+    socket.on('chat_reception_broadcast', function(data) {
+        socket.broadcast.to(room).emit('chat_send', {value : data.value});
     });
-    // S08. client_to_server_personalイベント・データを受信し、送信元のみに送信する
-    socket.on('ctos_personal', function(data) {
+    //  ctos_personalイベント・データを受信し、送信元のみに送信する
+    socket.on('chat_reception_personal', function(data) {
         var id = socket.id;
         name = data.value;
         var personalMessage = "あなたは、" + name + "さんとして入室しました。"
-        io.to(id).emit('stoc', {value : personalMessage});
+        io.to(id).emit('chat_send', {value : personalMessage});
     });
-    // S09. dicconnectイベントを受信し、退出メッセージを送信する
+    //  dicconnectイベントを受信し、退出メッセージを送信する
     socket.on('disconnect', function() {
         if (name == '') {
             console.log("未入室のまま、どこかへ去っていきました。");
         } else {
             var endMessage = name + "さんが退出しました。"
-            io.to(room).emit('stoc', {value : endMessage});
+            io.to(room).emit('chat_send', {value : endMessage});
         }
     });   
 
@@ -134,37 +134,7 @@ io.sockets.on( 'connection', function( socket ) {
 
 
 //リスト画面_シェア側情報をクライアント側に送信、更新したら再送信
-  socket.on( 'sharetable_list', function() {
-     var table_info = "select share_id, title, category_id, explain from events;"
-
-     var shop_info = "select shop_name from shops;"
-      client.query(table_info, function(err,info){
-       client.query(shop_info, function(err, sinfo){
-        console.log(info.rows.length);
-
-        var i = info.rows.length-1;
-        var m = info.rows.length;
-        var n = 0; 
-        var arraylist = new Array();
-        while(i>=m-10){  
-          console.log("share_id="+info.rows[i].share_id+"title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
-          arraylist[n] = new Object();
-          arraylist[n].shareid = info.rows[i].share_id; 
-          arraylist[n].title = info.rows[i].title;
-          arraylist[n].category_id = info.rows[i].category_id|0;
-          arraylist[n].explain = info.rows[i].explain;
-          arraylist[n].shopname = sinfo.rows[0].shop_name;
-          //arraylist[n] = list;
-          i=(i-1)|0;
-          //console.log(arraylist[n].title);
-          n= n + 1;
-        }
-        io.sockets.emit('sharetable_list_back', arraylist);
-      });
-    });
-  });
-
-  socket.on("reload_sharetable_list", function() {
+  socket.on("resend_sharelist", function() {
      var table_info = "select share_id, title, category_id, explain from events;"
 
      var shop_info = "select shop_name from shops;"
@@ -353,7 +323,7 @@ console.log("success");
 
       // /csv/CategoryList.csv を見に行く
       // fs.readFileSync(process.argv[2], 'utf8').split('\n').length - 1
-      fs.readFile(__dirname + "/csv/CategoryList.csv", 'utf-8', function(err,source){
+      fs.readFile(__dirname + "/csv/CategoryList1.csv", 'utf-8', function(err,source){
         //もし見つからなかったらエラーを返す
         if(err){
           io.sockets.emit( 'categorylist_res', "error" );
