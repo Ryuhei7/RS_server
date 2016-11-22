@@ -242,7 +242,7 @@ io.sockets.on( 'connection', function( socket ) {
   socket.on('menu_request',function(data){
     pg.connect(connect_db,function(err,client){
       var menu = "select * from menu where shop_id = 1;"
-      client.query(menu,function(data){
+      client.query(menu,function(err, data){
         var array = new Array();
         var max = data.rows.length-1;
         var i = 0;
@@ -261,8 +261,9 @@ io.sockets.on( 'connection', function( socket ) {
   socket.on('newuser',function(data){
     pg.connect(connect_db,function(err,client){
       var gmax = "select user_id from users;"
-      client.query(gmax,function(data2){
+      client.query(gmax,function(err, data2){
         max = data2.rows.length+1;
+        console.log("max")
         var add = "insert into users(user_id, hyoka, name, point, password, hyoka_sum, hyoka_times) values ("+max+",0,'"+data.username+"',100,'"+data.password+"',0,0);"
         client.query(add);
         socket.to(socket.id).emit("newuser_back",gmax);
@@ -272,7 +273,7 @@ io.sockets.on( 'connection', function( socket ) {
 
   socket.on("load",function(data){
     var check = "select scheck,share_id from events where scheck = 1 and (h_user_id = "+data+" or g_user_id = "+data+");"
-    client.query(check,function(data2){
+    client.query(check,function(err, data2){
       if(data2.rows[0].scheck==1){
         var sc1 = new Object();
         sc1.shrecheck = data2.rows[0].scheck;
