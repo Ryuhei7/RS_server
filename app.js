@@ -261,12 +261,12 @@ io.sockets.on( 'connection', function( socket ) {
   socket.on('newuser',function(data){
     pg.connect(connect_db,function(err,client){
       var gmax = "select user_id from users;"
-      var nu = socket.id;
       client.query(gmax,function(err, data2){
         max = data2.rows.length+1;
         console.log("max")
         var add = "insert into users(user_id, hyoka, name, point, password, hyoka_sum, hyoka_times) values ("+max+",0,'"+data.username+"',100,'"+data.password+"',0,0);"
         client.query(add);
+        var nu = socket.id;
         io.sockets.to(nu).emit("newuser_back",max);
       });
     });
