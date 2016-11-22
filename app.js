@@ -278,7 +278,9 @@ io.sockets.on( 'connection', function( socket ) {
     var check = "select scheck,share_id from events where scheck = 1 and (h_user_id = "+data+" or g_user_id = "+data+");"
     client.query(check,function(err, data2){
       console.log(data2);
-    if(data2.rows[0].scheck==1){
+      console.log(data2.rows.length);
+      /*
+    if(data2.rows[0]=!1){
         var sc1 = new Object();
         sc1.shrecheck = data2.rows[0].scheck;
         sc1.shareid = data2.rows[0].scheck;
@@ -291,6 +293,7 @@ io.sockets.on( 'connection', function( socket ) {
         var load2 = socket.id
         io.sockets.to(load2).emit("load_back",sc2);
       }
+      */
     });
   });
 });
