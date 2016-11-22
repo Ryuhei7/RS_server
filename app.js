@@ -276,7 +276,7 @@ io.sockets.on( 'connection', function( socket ) {
     pg.connect(connect_db,function(err,client){
     var check = "select scheck,share_id from events where scheck = 1 and (h_user_id = "+data+" or g_user_id = "+data+");"
     client.query(check,function(err, data2){
-      if(data2.rows[0].scheck==1){
+      if(data2.rows[0].scheck=!null){
         var sc1 = new Object();
         sc1.shrecheck = data2.rows[0].scheck;
         sc1.shareid = data2.rows[0].scheck;
