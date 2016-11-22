@@ -267,7 +267,7 @@ io.sockets.on( 'connection', function( socket ) {
         var add = "insert into users(user_id, hyoka, name, point, password, hyoka_sum, hyoka_times) values ("+max+",0,'"+data.username+"',100,'"+data.password+"',0,0);"
         client.query(add);
         var nu = socket.id;
-        io.sockets.to(nu).emit("newuser_back",max);
+        socket.to(nu).emit("newuser_back",max);
       });
     });
   });
