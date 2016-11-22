@@ -155,6 +155,7 @@ io.sockets.on( 'connection', function( socket ) {
             infoback.shop_y =res_shop.rows[0].x;
             console.log("success");
             console.log(infoback.endtime);
+            console.log(infoback.seatnum);
             id = socket.id;
             io.sockets.to(id).emit('detail_back',infoback);
           });
