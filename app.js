@@ -279,13 +279,14 @@ io.sockets.on( 'connection', function( socket ) {
         var sc1 = new Object();
         sc1.shrecheck = data2.rows[0].scheck;
         sc1.shareid = data2.rows[0].scheck;
-        socket.to(socket.id).emit("load_back",sc1);
+       var load1 = socket.id;
+        io.sockets.to(load1).emit("load_back",sc1);
       }else{
         var sc2 = new Object();
         sc2.shrecheck = 0;
         sc2.shareid = 0;
-        var load = socket.id
-        io.sockets.to(load).emit("load_back",sc2);
+        var load2 = socket.id
+        io.sockets.to(load2).emit("load_back",sc2);
       }
     });
   });
