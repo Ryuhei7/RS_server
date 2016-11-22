@@ -273,6 +273,7 @@ io.sockets.on( 'connection', function( socket ) {
   });
 
   socket.on('load',function(data){
+    pg.connect(connect_db,function(err,client){
     var check = "select scheck,share_id from events where scheck = 1 and (h_user_id = "+data+" or g_user_id = "+data+");"
     client.query(check,function(err, data2){
       if(data2.rows[0].scheck==1){
@@ -290,5 +291,6 @@ io.sockets.on( 'connection', function( socket ) {
       }
     });
   });
+});
 
 });
