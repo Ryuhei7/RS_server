@@ -71,8 +71,11 @@ io.sockets.on( 'connection', function( socket ) {
     pg.connect(connect_db, function(err, client){
       console.log("受信");
       var infoback = new Object();
-      var id = "select * from events where share_id = "+id+";"_id from events;"
-      socket.join(id);
+      var share_id = "select * from events where share_id = "+id+";"_id from events;"
+      client.query(share_id, function(err,rows) {
+        console.log(rows);
+      });
+      socket.join(share_id);
     });
 
         
