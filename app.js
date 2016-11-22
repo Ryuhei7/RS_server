@@ -287,7 +287,7 @@ io.sockets.on( 'connection', function( socket ) {
         io.sockets.to(load1).emit("load_back",sc1);
       }else{
         var sc2 = new Object();
-        sc2.shrecheck = 0;
+        sc2.sharecheck = 0;
         sc2.shareid = 0;
         var load2 = socket.id
         io.sockets.to(load2).emit("load_back",sc2);
