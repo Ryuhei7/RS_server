@@ -148,7 +148,7 @@ io.sockets.on( 'connection', function( socket ) {
             infoback.endtime = res_detail.rows[0].end_time;
             infoback.explain = res_detail.rows[0].explain;
             infoback.seatinfo = res_detail.rows[0].seatinfo;
-            infoback.seatnum = res_detail.rows[0].seatnum;
+            infoback.seatnum = res_detail.rows[0].table_id;
             infoback.shop_address = res_shop.rows[0].address;
             infoback.shop_name = res_shop.rows[0].shop_name;
             infoback.shop_x = res_shop.rows[0].y;
