@@ -222,8 +222,8 @@ io.sockets.on( 'connection', function( socket ) {
       var gethyoka = "select hyoka_sum, hyoka_times from users where user_id= "+data.recieveuserid+";"
 
       client.query(gethyoka,function(result){
-        var sum = result.row[0].hyoka_sum + data.nowhyoka;
-        var times = result.row[0].hyoka_times + 1;
+        var sum = result.rows[0].hyoka_sum + data.nowhyoka;
+        var times = result.rows[0].hyoka_times + 1;
         var newhyoka = Math.round(sum/times);
         var update = "update users set hyoka_sum = "+sum+", hyoka_times = "+times+", hyoka = "+newhyoka+" where user_id = "+data.recieveuserid+";"
 
