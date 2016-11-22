@@ -292,7 +292,6 @@ io.sockets.on( 'connection', function( socket ) {
         var load2 = socket.id
         io.sockets.to(load2).emit("load_back",sc2);
       }
-      */
     });
   });
 });
