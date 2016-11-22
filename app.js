@@ -223,6 +223,7 @@ io.sockets.on( 'connection', function( socket ) {
       console.log(data.nowhyoka);
       console.log(data.recieveuserid);
       client.query(gethyoka,function(err, result){
+        console.log(result.rows[0].hyoka_sum);
         var sum = result.rows[0].hyoka_sum + data.nowhyoka;
         var times = result.rows[0].hyoka_times + 1;
         var newhyoka = Math.round(sum/times);
@@ -230,6 +231,7 @@ io.sockets.on( 'connection', function( socket ) {
 
         client.query(update);
         var hyokainfo = "insert into hyokainfo value ("+data.senduserid+","+data.recieveuserid+",''"+data.comment+"'',"+data.nowhyoka+");"
+        client.query(hyokainfo);
         //io.sockets.to(id).emit("end","success");
         console.log("success");
       });
