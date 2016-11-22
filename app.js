@@ -262,11 +262,11 @@ io.sockets.on( 'connection', function( socket ) {
     pg.connect(connect_db,function(err,client){
       var gmax = "select user_id from users;"
       client.query(gmax,function(err, data2){
-        max = data2.rows.length+1;
-        console.log("max");
+        var max = parseInt(data2.rows.length)+1;
+        console.log(max);
         var add = "insert into users(user_id, hyoka, name, point, password, hyoka_sum, hyoka_times) values ("+max+",0,'"+data.username+"',100,'"+data.password+"',0,0);"
         client.query(add);
-        nu = socket.id;
+        var nu = socket.id;
         io.sockets.to(nu).emit("newuser_back",max);
       });
     });
@@ -284,7 +284,8 @@ io.sockets.on( 'connection', function( socket ) {
         var sc2 = new Object();
         sc2.shrecheck = 0;
         sc2.shareid = 0;
-        socket.to(socket.id).emit("load_back",sc2);
+        var load = socket.id
+        io.sockets.to(load).emit("load_back",sc2);
       }
     });
   });
