@@ -70,10 +70,15 @@ io.sockets.on( 'connection', function( socket ) {
     socket.on('join',finction(id){
     pg.connect(connect_db, function(err, client){
       console.log("受信");
-      var infoback = new Object();
+      // var infoback = new Object();
       var share_id = "select * from events where share_id = "+id+";"_id from events;"
       client.query(share_id, function(err,rows) {
-        console.log(rows);
+        //取得したデータ件数
+        console.log("Rows:" + result.rows.length);
+        // 取得したデータの詳細を表示する
+        for(i=0; i < result.rows.length; i++){
+          console.log("id=" + result.rows[i].share_id);
+        }
       });
       socket.join(share_id);
     });
