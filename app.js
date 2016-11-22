@@ -274,9 +274,8 @@ io.sockets.on( 'connection', function( socket ) {
 
   socket.on('load',function(data){
     pg.connect(connect_db,function(err,client){
-    var uid = parseInt(data);
-    console.log(uid);
-    var check = "select scheck,share_id from events where scheck = 0 and (h_user_id = "+uid+" or g_user_id = "+uid+");"
+    console.log(data);
+    var check = "select scheck,share_id from events where scheck = 0 and (h_user_id = "+data+" or g_user_id = "+data+");"
     client.query(check,function(err, data2){
       console.log(data2);
     /*  if(data2.rows[0].scheck=!null){
