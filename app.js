@@ -266,7 +266,7 @@ io.sockets.on( 'connection', function( socket ) {
         console.log("max")
         var add = "insert into users(user_id, hyoka, name, point, password, hyoka_sum, hyoka_times) values ("+max+",0,'"+data.username+"',100,'"+data.password+"',0,0);"
         client.query(add);
-        socket.to(socket.id).emit("newuser_back",gmax);
+        socket.to(socket.id).emit("newuser_back",max);
       });
     });
   });
