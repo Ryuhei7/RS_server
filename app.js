@@ -263,10 +263,11 @@ io.sockets.on( 'connection', function( socket ) {
       var gmax = "select user_id from users;"
       client.query(gmax,function(err, data2){
         max = data2.rows.length+1;
-        console.log("max")
+        console.log("max");
         var add = "insert into users(user_id, hyoka, name, point, password, hyoka_sum, hyoka_times) values ("+max+",0,'"+data.username+"',100,'"+data.password+"',0,0);"
         client.query(add);
-        socket.to(socket.id).emit("newuser_back",max);
+        nu = socket.id;
+        io.sockets.to(nu).emit("newuser_back",max);
       });
     });
   });
