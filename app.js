@@ -279,7 +279,7 @@ io.sockets.on( 'connection', function( socket ) {
     client.query(check,function(err, data2){
       console.log(data2);
       console.log(data2.rows.length);
-    if(data2.rows.length=!0){
+    if(data2.rows.length!=0){
         var sc1 = new Object();
         sc1.shrecheck = data2.rows[0].scheck;
         sc1.shareid = data2.rows[0].scheck;
