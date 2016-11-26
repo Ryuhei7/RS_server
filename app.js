@@ -102,7 +102,8 @@ io.sockets.on( 'connection', function( socket ) {
         client.query(table_info, function(err,info){
           client.query(shop_info, function(err, sinfo){
             console.log(info.rows.length);
-
+            console.log(data.location_x);
+            console.log(data.location_y);
             var i = info.rows.length-1;
             var m = info.rows.length;
             var n = 0;
