@@ -96,34 +96,96 @@ io.sockets.on( 'connection', function( socket ) {
   //ShareTableList の一覧を出力
   socket.on( 'sharetable_list', function(data) {
     pg.connect(connect_db, function(err, client){
-      var table_info = "select share_id, title, category_id, explain from events;"
+      if(data.refine==0){
+        var table_info = "select share_id, title, category_id, explain from events;"
+        var shop_info = "select shop_name from shops;"
+        client.query(table_info, function(err,info){
+          client.query(shop_info, function(err, sinfo){
+            console.log(info.rows.length);
 
-      var shop_info = "select shop_name from shops;"
-      client.query(table_info, function(err,info){
-        client.query(shop_info, function(err, sinfo){
-          console.log(info.rows.length);
-
-          var i = info.rows.length-1;
-          var m = info.rows.length;
-          var n = 0;
-          var arraylist = new Array();
-          while(i>=m-10){
-            console.log("share_id="+info.rows[i].share_id+"title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
-            arraylist[n] = new Object();
-            arraylist[n].shareid = info.rows[i].share_id;
-            arraylist[n].title = info.rows[i].title;
-            arraylist[n].category_id = info.rows[i].category_id|0;
-            arraylist[n].explain = info.rows[i].explain;
-            arraylist[n].shopname = sinfo.rows[0].shop_name;
-            //arraylist[n] = list;
-            i=(i-1)|0;
-            //console.log(arraylist[n].title);
-            n= n + 1;
-          }
-          id = socket.id;
-          io.sockets.to(id).emit('sharetable_list_back', arraylist);
+            var i = info.rows.length-1;
+            var m = info.rows.length;
+            var n = 0;
+            var arraylist = new Array();
+            while(i>=m-10){
+              console.log("share_id="+info.rows[i].share_id+"title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
+              arraylist[n] = new Object();
+              arraylist[n].shareid = info.rows[i].share_id;
+              arraylist[n].title = info.rows[i].title;
+              arraylist[n].category_id = info.rows[i].category_id|0;
+              arraylist[n].explain = info.rows[i].explain;
+              arraylist[n].shopname = sinfo.rows[0].shop_name;
+              //arraylist[n] = list;
+              i=(i-1)|0;
+              //console.log(arraylist[n].title);
+              n= n + 1;
+            }
+            id = socket.id;
+            io.sockets.to(id).emit('sharetable_list_back', arraylist);
+          });
         });
-      });
+      }else if(data.refine==1){
+        var table_info = "select share_id, title, category_id, explain from events where category_id = "+data.category_id+";"
+        var shop_info = "select shop_name from shops;"
+        client.query(table_info, function(err,info){
+          if(info.rows.length>0){
+          client.query(shop_info, function(err, sinfo){
+            console.log(info.rows.length);
+
+            var i = info.rows.length-1;
+            var m = info.rows.length;
+            var n = 0;
+            var arraylist = new Array();
+            while(n<m){
+              console.log("share_id="+info.rows[i].share_id+"title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
+              arraylist[n] = new Object();
+              arraylist[n].shareid = info.rows[i].share_id;
+              arraylist[n].title = info.rows[i].title;
+              arraylist[n].category_id = info.rows[i].category_id|0;
+              arraylist[n].explain = info.rows[i].explain;
+              arraylist[n].shopname = sinfo.rows[0].shop_name;
+              //arraylist[n] = list;
+              i=(i-1)|0;
+              //console.log(arraylist[n].title);
+              n= n + 1;
+            }
+            id = socket.id;
+            io.sockets.to(id).emit('sharetable_list_back', arraylist);
+          });
+        }else{}
+        });
+      }else if(data.refine==2){
+        var shop_info = "select shop_name, shop_id from shops where shop_name = '"+data.shopname+"';"
+        client.query(shop_info, function(err, sinfo){
+          if (sinfo.row.length>0){
+          var table_info = "select share_id, title, category_id, explain from events where shop_id = "+sinfo.rows[0].shop_id+";"}
+          client.query(table_info, function(err,info){
+
+            console.log(info.rows.length);
+
+            var i = info.rows.length-1;
+            var m = info.rows.length;
+            var n = 0;
+            var arraylist = new Array();
+            while(n<m){
+              console.log("share_id="+info.rows[i].share_id+"title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
+              arraylist[n] = new Object();
+              arraylist[n].shareid = info.rows[i].share_id;
+              arraylist[n].title = info.rows[i].title;
+              arraylist[n].category_id = info.rows[i].category_id|0;
+              arraylist[n].explain = info.rows[i].explain;
+              arraylist[n].shopname = sinfo.rows[0].shop_name;
+              //arraylist[n] = list;
+              i=(i-1)|0;
+              //console.log(arraylist[n].title);
+              n= n + 1;
+            }
+            id = socket.id;
+            io.sockets.to(id).emit('sharetable_list_back', arraylist);
+          });
+        }else{}
+        });
+      }else{}
     });
   });
 
@@ -275,26 +337,26 @@ io.sockets.on( 'connection', function( socket ) {
 
   socket.on('load',function(data){
     pg.connect(connect_db,function(err,client){
-    console.log(data);
-    var check = "select scheck,share_id from events where scheck = 0 and (h_user_id = "+data+" or g_user_id = "+data+");"
-    client.query(check,function(err, data2){
-      console.log(data2);
-      console.log(data2.rows.length);
-    if(data2.rows.length!=0){
-        var sc1 = new Object();
-        sc1.shrecheck = data2.rows[0].scheck;
-        sc1.shareid = data2.rows[0].scheck;
-       var load1 = socket.id;
-        io.sockets.to(load1).emit("load_back",sc1);
-      }else{
-        var sc2 = new Object();
-        sc2.sharecheck = 0;
-        sc2.shareid = 0;
-        var load2 = socket.id
-        io.sockets.to(load2).emit("load_back",sc2);
-      }
+      console.log(data);
+      var check = "select scheck,share_id from events where scheck = 0 and (h_user_id = "+data+" or g_user_id = "+data+");"
+      client.query(check,function(err, data2){
+        console.log(data2);
+        console.log(data2.rows.length);
+        if(data2.rows.length!=0){
+          var sc1 = new Object();
+          sc1.shrecheck = data2.rows[0].scheck;
+          sc1.shareid = data2.rows[0].scheck;
+          var load1 = socket.id;
+          io.sockets.to(load1).emit("load_back",sc1);
+        }else{
+          var sc2 = new Object();
+          sc2.sharecheck = 0;
+          sc2.shareid = 0;
+          var load2 = socket.id
+          io.sockets.to(load2).emit("load_back",sc2);
+        }
+      });
     });
   });
-});
 
 });
