@@ -158,7 +158,7 @@ io.sockets.on( 'connection', function( socket ) {
         var shop_info = "select shop_name, shop_id from shops where shop_name = '"+data.shopname+"';"
         client.query(shop_info, function(err, sinfo){
           if (sinfo.row.length>0){
-          var table_info = "select share_id, title, category_id, explain from events where shop_id = "+sinfo.rows[0].shop_id+";"}
+          var table_info = "select share_id, title, category_id, explain from events where shop_id = "+sinfo.rows[0].shop_id+";"
           client.query(table_info, function(err,info){
 
             console.log(info.rows.length);
