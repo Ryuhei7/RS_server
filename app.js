@@ -364,4 +364,9 @@ io.sockets.on( 'connection', function( socket ) {
     });
   });
 
+socket.on('chat_send',function(data){
+io.sockets.emit('chat_reception',data);
+}
+
+
 });
