@@ -95,6 +95,8 @@ io.sockets.on( 'connection', function( socket ) {
 
   //ShareTableList の一覧を出力
   socket.on( 'sharetable_list', function(data) {
+    console.log(parsedouble(data.location_x));
+    console.log(parsedouble(data.location_y));
     pg.connect(connect_db, function(err, client){
       if(data.refine==0){
         var table_info = "select share_id, title, category_id, explain from events;"
@@ -102,8 +104,7 @@ io.sockets.on( 'connection', function( socket ) {
         client.query(table_info, function(err,info){
           client.query(shop_info, function(err, sinfo){
             console.log(info.rows.length);
-            console.log(data.location_x);
-            console.log(data.location_y);
+
             var i = info.rows.length-1;
             var m = info.rows.length;
             var n = 0;
