@@ -95,8 +95,8 @@ io.sockets.on( 'connection', function( socket ) {
 
   //ShareTableList の一覧を出力
   socket.on( 'sharetable_list', function(data) {
-    var x = parseDouble(data.location_x);
-    var y = parseDouble(data.location_y);
+    var x = data.location_x;
+    var y = data.location_y;
     console.log(x);
     console.log(y);
     pg.connect(connect_db, function(err, client){
