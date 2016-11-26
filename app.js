@@ -242,7 +242,7 @@ io.sockets.on( 'connection', function( socket ) {
 
   socket.on('menu_request',function(data){
     pg.connect(connect_db,function(err,client){
-      var menu = "select * from menu where shop_id = 1;"
+      var menu = "select * from items where shop_id = 1;"
       client.query(menu,function(err, data){
         var array = new Array();
         var max = data.rows.length-1;
