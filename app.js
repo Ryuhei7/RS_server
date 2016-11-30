@@ -366,7 +366,8 @@ io.sockets.on( 'connection', function( socket ) {
   });
 
   socket.on('chat_send',function(data){
-    io.socket.broadcast('chat_reception',data);
+    console.log(data);
+    io.socket.broadcast.emit('chat_reception',data);
   });
 
 
