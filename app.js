@@ -1,4 +1,4 @@
-var http = require( 'http' ); // HTTPモジュール読み込み
+﻿var http = require( 'http' ); // HTTPモジュール読み込み
 var socketio = require( 'socket.io' ); // Socket.IOモジュール読み込み
 var fs = require( 'fs' ); // ファイル入出力モジュール読み込み
 var pg = require( 'pg' );
@@ -7,7 +7,7 @@ var id;
 var server = http.createServer( function( req, res ) {
   //もしURLにファイル名がないならばindex.htmlに飛ばすように
   if(req.url == "/")
-  req.url = "/index.html";
+    req.url = "/index.html";
   //URLでリクエストされたページをread
   fs.readFile(__dirname + req.url, 'utf-8', function(err, data){
     //もし見つからなかったら404を返す
@@ -77,18 +77,18 @@ io.sockets.on( 'connection', function( socket ) {
       var get_max = "select share_id from events;"
 
       client.query(get_max, function(err,max)
-      {
-        console.log(get_max);
-        console.log(max);
-        var  share_max = max.rows.length+1;
-        console.log(share_max);
-        var socketid = socket.id;
-        var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time,seatinfo,socket_host) values ("+ share_max +","+source.shopid+","+source.tableid+",'"+source.title+"',"+source.category_id+",'"+source.explain+"',"+source.userid+",'"+source.endtime+"',"+source.seatinfo+",'"+socketid+"');"
-        console.log(insert_share);
-        client.query(insert_share);
-        id  = socket.id;
-        io.sockets.to(id).emit('sharetable_start_back', share_max);
-      });
+        {
+          console.log(get_max);
+          console.log(max);
+          var  share_max = max.rows.length+1;
+          console.log(share_max);
+          var socketid = socket.id;
+          var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time,seatinfo,socket_host) values ("+ share_max +","+source.shopid+","+source.tableid+",'"+source.title+"',"+source.category_id+",'"+source.explain+"',"+source.userid+",'"+source.endtime+"',"+source.seatinfo+",'"+socketid+"');"
+          console.log(insert_share);
+          client.query(insert_share);
+          id  = socket.id;
+          io.sockets.to(id).emit('sharetable_start_back', share_max);
+        });
     });
   });
 
@@ -134,61 +134,61 @@ io.sockets.on( 'connection', function( socket ) {
         var shop_info = "select shop_name from shops;"
         client.query(table_info, function(err,info){
           if(info.rows.length>0){
-          client.query(shop_info, function(err, sinfo){
-            console.log(info.rows.length);
+            client.query(shop_info, function(err, sinfo){
+              console.log(info.rows.length);
 
-            var i = info.rows.length-1;
-            var m = info.rows.length;
-            var n = 0;
-            var arraylist = new Array();
-            while(n<m){
-              console.log("share_id="+info.rows[i].share_id+"title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
-              arraylist[n] = new Object();
-              arraylist[n].shareid = info.rows[i].share_id;
-              arraylist[n].title = info.rows[i].title;
-              arraylist[n].category_id = info.rows[i].category_id|0;
-              arraylist[n].explain = info.rows[i].explain;
-              arraylist[n].shopname = sinfo.rows[0].shop_name;
-              //arraylist[n] = list;
-              i=(i-1)|0;
-              //console.log(arraylist[n].title);
-              n= n + 1;
-            }
-            id = socket.id;
-            io.sockets.to(id).emit('sharetable_list_back', arraylist);
-          });
-        }else{}
+              var i = info.rows.length-1;
+              var m = info.rows.length;
+              var n = 0;
+              var arraylist = new Array();
+              while(n<m){
+                console.log("share_id="+info.rows[i].share_id+"title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
+                arraylist[n] = new Object();
+                arraylist[n].shareid = info.rows[i].share_id;
+                arraylist[n].title = info.rows[i].title;
+                arraylist[n].category_id = info.rows[i].category_id|0;
+                arraylist[n].explain = info.rows[i].explain;
+                arraylist[n].shopname = sinfo.rows[0].shop_name;
+                //arraylist[n] = list;
+                i=(i-1)|0;
+                //console.log(arraylist[n].title);
+                n= n + 1;
+              }
+              id = socket.id;
+              io.sockets.to(id).emit('sharetable_list_back', arraylist);
+            });
+          }else{}
         });
       }else if(data.refine==2){
         var shop_info = "select shop_name, shop_id from shops where shop_name = '"+data.shopname+"';"
         client.query(shop_info, function(err, sinfo){
           if (sinfo.rows.length>0){
-          var table_info = "select share_id, title, category_id, explain from events where shop_id = "+sinfo.rows[0].shop_id+";"
-          client.query(table_info, function(err,info){
+            var table_info = "select share_id, title, category_id, explain from events where shop_id = "+sinfo.rows[0].shop_id+";"
+            client.query(table_info, function(err,info){
 
-            console.log(info.rows.length);
+              console.log(info.rows.length);
 
-            var i = info.rows.length-1;
-            var m = info.rows.length;
-            var n = 0;
-            var arraylist = new Array();
-            while(n<m){
-              console.log("share_id="+info.rows[i].share_id+"title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
-              arraylist[n] = new Object();
-              arraylist[n].shareid = info.rows[i].share_id;
-              arraylist[n].title = info.rows[i].title;
-              arraylist[n].category_id = info.rows[i].category_id|0;
-              arraylist[n].explain = info.rows[i].explain;
-              arraylist[n].shopname = sinfo.rows[0].shop_name;
-              //arraylist[n] = list;
-              i=(i-1)|0;
-              //console.log(arraylist[n].title);
-              n= n + 1;
-            }
-            id = socket.id;
-            io.sockets.to(id).emit('sharetable_list_back', arraylist);
-          });
-        }else{}
+              var i = info.rows.length-1;
+              var m = info.rows.length;
+              var n = 0;
+              var arraylist = new Array();
+              while(n<m){
+                console.log("share_id="+info.rows[i].share_id+"title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
+                arraylist[n] = new Object();
+                arraylist[n].shareid = info.rows[i].share_id;
+                arraylist[n].title = info.rows[i].title;
+                arraylist[n].category_id = info.rows[i].category_id|0;
+                arraylist[n].explain = info.rows[i].explain;
+                arraylist[n].shopname = sinfo.rows[0].shop_name;
+                //arraylist[n] = list;
+                i=(i-1)|0;
+                //console.log(arraylist[n].title);
+                n= n + 1;
+              }
+              id = socket.id;
+              io.sockets.to(id).emit('sharetable_list_back', arraylist);
+            });
+          }else{}
         });
       }else{}
     });
@@ -365,9 +365,9 @@ io.sockets.on( 'connection', function( socket ) {
     });
   });
 
-socket.on('chat_send',function(data){
-io.sockets.emit('chat_reception',data);
-});
+  socket.on('chat_send',function(data){
+    io.sockets.broadcast('chat_reception',data);
+  });
 
 
 });
