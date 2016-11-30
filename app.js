@@ -207,14 +207,12 @@ io.sockets.on( 'connection', function( socket ) {
     pg.connect(connect_db, function(err, client){
       console.log(data);
       var uid = "select h_user_id, g_user_id from events where share_id = "+data+";"
-/*
       client.query(uid,function(data2){
         var arr = new Array();
         arr[0]=data2.rows[0].h_user_id;
         arr[1]=data2.rows[0].g_user_id;
         socket.to(socket.id).emit(hyokauser_back, arr);
       });
-*/
     });
   });
 
