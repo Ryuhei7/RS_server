@@ -125,7 +125,12 @@ io.sockets.on( 'connection', function( socket ) {
     console.log(x);
     console.log(y);
     pg.connect(connect_db, function(err, client){
-      if(data.refine==0){
+       //エラー処理
+      query.on('error', function(error) {
+        console.log("error event stat...");
+      });
+
+     if(data.refine==0){
         var table_info = "select share_id, title, category_id, explain from events;"
         var shop_info = "select shop_name from shops;"
         client.query(table_info, function(err,info){
