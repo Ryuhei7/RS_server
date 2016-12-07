@@ -90,12 +90,6 @@ io.sockets.on( 'connection', function( socket ) {
   socket.on( 'sharetable_start', function( source ) {
     pg.connect(connect_db, function(err, client){
 
-      //エラー処理
-      query.on('error', function(error) {
-        console.log("error event stat...");
-      });
-
-
       console.log("recieved sharetable_start");
 
       var get_max = "select share_id from events;"
@@ -126,7 +120,7 @@ io.sockets.on( 'connection', function( socket ) {
     console.log(y);
     pg.connect(connect_db, function(err, client){
        //エラー処理
-      query.on('error', function(error) {
+      client.query.on('error', function(error) {
         console.log("error event stat...");
       });
 
