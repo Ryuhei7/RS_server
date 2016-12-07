@@ -3,6 +3,23 @@ var socketio = require( 'socket.io' ); // Socket.IOモジュール読み込み
 var fs = require( 'fs' ); // ファイル入出力モジュール読み込み
 var pg = require( 'pg' );
 var id;
+
+//サーバー実装の前に、エラーハンドリングを記載（ただしエラーの詳細は不明）
+process.on('uncaughtException', function(err) {
+  console.log(err);
+});
+
+/*
+//ちゃんとエラー処理を書く
+try {
+  var json = JSON.parse('<tag>NOT JSON FORMART</tag>');
+} catch (e) {
+  res.writeHead(400, {"Content-Type":"text/html"});
+  res.end('invalid format');
+  return;
+}
+*/
+
 // ポート固定でHTTPサーバーを立てる
 var server = http.createServer( function( req, res ) {
   //もしURLにファイル名がないならばindex.htmlに飛ばすように
