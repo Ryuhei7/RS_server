@@ -206,7 +206,7 @@ io.sockets.on( 'connection', function( socket ) {
           var i;
           for(i=0;i<smax;i=i+1){
             var x2 = shop.rows[i].shop_y * Math.PI / 180;
-            var y2 = shop.rous[i].shop_x * Math.PI / 180;
+            var y2 = shop.rows[i].shop_x * Math.PI / 180;
             var uy = (y1 + y2)/2;
             var dx = x1 - x2;
             var dy = y1 - y2;
