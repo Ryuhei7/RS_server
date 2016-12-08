@@ -7,7 +7,7 @@ var id;
 var server = http.createServer( function( req, res ) {
   //もしURLにファイル名がないならばindex.htmlに飛ばすように
   if(req.url == "/")
-    req.url = "/index.html";
+  req.url = "/index.html";
   //URLでリクエストされたページをread
   fs.readFile(__dirname + req.url, 'utf-8', function(err, data){
     //もし見つからなかったら404を返す
@@ -77,18 +77,18 @@ io.sockets.on( 'connection', function( socket ) {
       var get_max = "select share_id from events;"
 
       client.query(get_max, function(err,max)
-        {
-          console.log(get_max);
-          console.log(max);
-          var  share_max = max.rows.length+1;
-          console.log(share_max);
-          var socketid = socket.id;
-          var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time,seatinfo,socket_host) values ("+ share_max +","+source.shopid+","+source.tableid+",'"+source.title+"',"+source.category_id+",'"+source.explain+"',"+source.userid+",'"+source.endtime+"',"+source.seatinfo+",'"+socketid+"');"
-          console.log(insert_share);
-          client.query(insert_share);
-          id  = socket.id;
-          io.sockets.to(id).emit('sharetable_start_back', share_max);
-        });
+      {
+        console.log(get_max);
+        console.log(max);
+        var  share_max = max.rows.length+1;
+        console.log(share_max);
+        var socketid = socket.id;
+        var insert_share = "insert into events(share_id,shop_id,table_id,title,category_id,explain,h_user_id,end_time,seatinfo,socket_host) values ("+ share_max +","+source.shopid+","+source.tableid+",'"+source.title+"',"+source.category_id+",'"+source.explain+"',"+source.userid+",'"+source.endtime+"',"+source.seatinfo+",'"+socketid+"');"
+        console.log(insert_share);
+        client.query(insert_share);
+        id  = socket.id;
+        io.sockets.to(id).emit('sharetable_start_back', share_max);
+      });
     });
   });
 
@@ -190,10 +190,81 @@ io.sockets.on( 'connection', function( socket ) {
             });
           }else{}
         });
+      }else if(data.refine==3){
+        var e = 0.081819191042815790;
+        var e2= 0.00669438002301188;
+        var ae = 6335439.32708317;
+        var a = 6378137.000;
+        var x1 = data.location_x * Math.PI / 180;
+        var y1 = data.location_y * Math.PI / 180;
+        var dis = data.radius;
+        var get_shop = "select * from shops;"
+        var arr_cou = 0;
+        var arr = new Array();
+        client.query(get_shop,function(err, shop){
+          var smax = shop.rows.length;
+          var i;
+          for(i=0;i<smax;i=i+1){
+            var x2 = shop.rows[i].shop_y * Math.PI / 180;
+            var y2 = shop.rous[i].shop_x * Math.PI / 180;
+            var uy = (y1 + y2)/2;
+            var dx = x1 - x2;
+            var dy = y1 - y2;
+            var sin_uy2 = Math.pow(Math.sin(uy),2);
+            var w = Math.sqrt(1-(e2 * sin_uy2));
+            var m = ae/Math.pow(w,3);
+            var n = a/w;
+            var d = Math.sqrt(Math.pow((dy*m),2) + Math.pow((dx*n*Math.cos(uy),2)));
+            if(d<=dis*100.0){
+              arr[arr_cou] = shop.rows[i].shop_id;
+              arr_cou = arr_cou + 1;
+            }else{
+            }
+          }
+          if(arr.length>0){
+            var i;
+            var table_info = "select share_id, title, category_id, explain from events where"
+            for(i=0;i<arr.length;i++){
+            if(i==arr.length-1){
+              table_info += " shop_id = "+arr[i]+";";
+            }else{
+              table_info += " shop_id = "+arr[i]+"";
+              table_info += " and";
+            }
+            }
+            client.query(table_info, function(err,info){
+              console.log(info.rows.length);
+              var i = info.rows.length-1;
+              var m = info.rows.length;
+              var n = 0;
+              var arraylist = new Array();
+              while(n<m){
+                console.log("share_id="+info.rows[i].share_id+"title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
+                arraylist[n] = new Object();
+                arraylist[n].shareid = info.rows[i].share_id;
+                arraylist[n].title = info.rows[i].title;
+                arraylist[n].category_id = info.rows[i].category_id|0;
+                arraylist[n].explain = info.rows[i].explain;
+                var g;
+                for(g=0;g<smax;g++){
+                  if(info.rows[i].shop_id==shop.rows[g].shop_id){
+                    arraylist[n].shopname = shop.rows[g].shop_name;
+                  }else{
+                  }
+                }
+                //arraylist[n] = list;
+                i=(i-1)|0;
+                //console.log(arraylist[n].title);
+                n= n + 1;
+              }
+              id = socket.id;
+              io.sockets.to(id).emit('sharetable_list_back', arraylist);
+            });
+          }else{}
+        });
       }else{}
     });
   });
-
 
   //クライアントでリストのどれかを選ばれたときに詳細を渡す
   socket.on('detail',function (id){
