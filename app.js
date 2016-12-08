@@ -3,6 +3,8 @@ var socketio = require( 'socket.io' ); // Socket.IOモジュール読み込み
 var fs = require( 'fs' ); // ファイル入出力モジュール読み込み
 var pg = require( 'pg' );
 var id;
+var test = 0;
+
 
 //サーバー実装の前にエラーハンドリングを記述
 process.on('uncaughtException', function(err) {
@@ -118,6 +120,8 @@ io.sockets.on( 'connection', function( socket ) {
 
     console.log(x);
     console.log(y);
+    console.log(test);
+    test++;
     pg.connect(connect_db, function(err, client){
       console.log("share table list");
       //エラー処理
