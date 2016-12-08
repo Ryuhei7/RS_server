@@ -216,7 +216,7 @@ io.sockets.on( 'connection', function( socket ) {
             var m = ae/Math.pow(w,3);
             var n = a/w;
             var d = Math.sqrt(Math.pow((dy*m),2) + Math.pow((dx*n*Math.cos(uy),2)));
-            console.console.log(d);
+            console.log(d);
             if(d<=dis*100.0){
               arr[arr_cou] = shop.rows[i].shop_id;
               arr_cou = arr_cou + 1;
