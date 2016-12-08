@@ -191,6 +191,7 @@ io.sockets.on( 'connection', function( socket ) {
           }else{}
         });
       }else if(data.refine==3){
+        console.log("radius serch");
         var e = 0.081819191042815790;
         var e2= 0.00669438002301188;
         var ae = 6335439.32708317;
@@ -215,6 +216,7 @@ io.sockets.on( 'connection', function( socket ) {
             var m = ae/Math.pow(w,3);
             var n = a/w;
             var d = Math.sqrt(Math.pow((dy*m),2) + Math.pow((dx*n*Math.cos(uy),2)));
+            console.console.log(d);
             if(d<=dis*100.0){
               arr[arr_cou] = shop.rows[i].shop_id;
               arr_cou = arr_cou + 1;
