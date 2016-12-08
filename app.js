@@ -194,6 +194,7 @@ io.sockets.on( 'connection', function( socket ) {
         console.log("radius serch");
         var e = 0.081819191042815790;
         var e2= 0.00669438002301188;
+        console.log(e2);
         var ae = 6335439.32708317;
         var a = 6378137.000;
         var x1 = data.location_x * Math.PI / 180;
@@ -207,14 +208,20 @@ io.sockets.on( 'connection', function( socket ) {
           var i;
           for(i=0;i<smax;i=i+1){
             var x2 = shop.rows[i].shop_y * Math.PI / 180;
+            console.log(x2);
             var y2 = shop.rows[i].shop_x * Math.PI / 180;
+            console.log(y2);
             var uy = (y1 + y2)/2;
             var dx = x1 - x2;
             var dy = y1 - y2;
             var sin_uy2 = Math.pow(Math.sin(uy),2);
+            console.log(sin_uy2);
             var w = Math.sqrt(1-(e2 * sin_uy2));
+            console.log(w);
             var m = ae/Math.pow(w,3);
+            console.log(m);
             var n = a/w;
+            console.log(n);
             var d = Math.sqrt(Math.pow((dy*m),2) + Math.pow((dx*n*Math.cos(uy),2)));
             console.log(d);
             if(d<=dis*100.0){
