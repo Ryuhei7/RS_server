@@ -119,6 +119,7 @@ io.sockets.on( 'connection', function( socket ) {
     console.log(x);
     console.log(y);
     pg.connect(connect_db, function(err, client){
+      console.log("share table list");
       //エラー処理
       client.on('error', function(error) {
         console.log("error event stat...");
