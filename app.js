@@ -119,12 +119,12 @@ io.sockets.on( 'connection', function( socket ) {
     console.log(x);
     console.log(y);
     pg.connect(connect_db, function(err, client){
-       //エラー処理
+      //エラー処理
       client.on('error', function(error) {
         console.log("error event stat...");
       });
 
-     if(data.refine==0){
+      if(data.refine==0){
         var table_info = "select share_id, title, category_id, explain from events;"
         var shop_info = "select shop_name from shops;"
         client.query(table_info, function(err,info){
@@ -213,10 +213,90 @@ io.sockets.on( 'connection', function( socket ) {
             });
           }else{}
         });
+      }else if(data.refine==3){
+        console.log("radius serch");
+        var e = 0.081819191042815790;
+        var e2= 0.00669438002301188;
+        console.log(e2);
+        var ae = 6335439.32708317;
+        var a = 6378137.000;
+        var x1 = data.location_x * Math.PI / 180;
+        var y1 = data.location_y * Math.PI / 180;
+        var dis = data.radius;
+        var get_shop = "select * from shops;"
+        var arr_cou = 0;
+        var arr = new Array();
+        client.query(get_shop,function(err, shop){
+          var smax = shop.rows.length;
+          var i;
+          for(i=0;i<smax;i=i+1){
+            var x2 = shop.rows[i].shop_y * Math.PI / 180;
+            console.log(x2);
+            var y2 = shop.rows[i].shop_x * Math.PI / 180;
+            console.log(y2);
+            var uy = (y1 + y2)/2;
+            var dx = x1 - x2;
+            var dy = y1 - y2;
+            var sin_uy2 = Math.pow(Math.sin(uy),2);
+            console.log(sin_uy2);
+            var w = Math.sqrt(1-(e2 * sin_uy2));
+            console.log(w);
+            var m = ae/Math.pow(w,3);
+            console.log(m);
+            var n = a/w;
+            console.log(n);
+            var d = Math.sqrt(Math.pow((dy*m),2) + Math.pow((dx*n*Math.cos(uy),2)));
+            console.log(d);
+            if(d<=dis*100.0){
+              arr[arr_cou] = shop.rows[i].shop_id;
+              arr_cou = arr_cou + 1;
+            }else{
+            }
+          }
+          if(arr.length>0){
+            var i;
+            var table_info = "select share_id, title, category_id, explain from events where"
+            for(i=0;i<arr.length;i++){
+              if(i==arr.length-1){
+                table_info += " shop_id = "+arr[i]+";";
+              }else{
+                table_info += " shop_id = "+arr[i]+"";
+                table_info += " and";
+              }
+            }
+            client.query(table_info, function(err,info){
+              console.log(info.rows.length);
+              var i = info.rows.length-1;
+              var m = info.rows.length;
+              var n = 0;
+              var arraylist = new Array();
+              while(n<m){
+                console.log("share_id="+info.rows[i].share_id+"title="+info.rows[i].title+" category="+info.rows[i].category_id+" explain="+info.rows[i].explain);
+                arraylist[n] = new Object();
+                arraylist[n].shareid = info.rows[i].share_id;
+                arraylist[n].title = info.rows[i].title;
+                arraylist[n].category_id = info.rows[i].category_id|0;
+                arraylist[n].explain = info.rows[i].explain;
+                var g;
+                for(g=0;g<smax;g++){
+                  if(info.rows[i].shop_id==shop.rows[g].shop_id){
+                    arraylist[n].shopname = shop.rows[g].shop_name;
+                  }else{
+                  }
+                }
+                //arraylist[n] = list;
+                i=(i-1)|0;
+                //console.log(arraylist[n].title);
+                n= n + 1;
+              }
+              id = socket.id;
+              io.sockets.to(id).emit('sharetable_list_back', arraylist);
+            });
+          }else{}
+        });
       }else{}
     });
   });
-
 
   //クライアントでリストのどれかを選ばれたときに詳細を渡す
   socket.on('detail',function (id){
@@ -394,3 +474,4 @@ io.sockets.on( 'connection', function( socket ) {
 
 
 });
+
