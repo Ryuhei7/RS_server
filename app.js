@@ -302,6 +302,7 @@ io.sockets.on( 'connection', function( socket ) {
         }else{}
       }
     });
+    pg.close(connect_db);
   });
 
   //クライアントでリストのどれかを選ばれたときに詳細を渡す
