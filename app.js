@@ -155,7 +155,9 @@ io.sockets.on( 'connection', function( socket ) {
               }
               id = socket.id;
               io.sockets.to(id).emit('sharetable_list_back', arraylist);
+            client.end();
             });
+          client.end();
           });
         }else if(data.refine==1){
           var table_info = "select share_id, title, category_id, explain from events where category_id = "+data.category_id+";"
@@ -301,9 +303,7 @@ io.sockets.on( 'connection', function( socket ) {
           });
         }else{}
       }
-    pg.close();
     });
-    //pg.close(connect_db);
   });
 
   //クライアントでリストのどれかを選ばれたときに詳細を渡す
