@@ -124,6 +124,11 @@ io.sockets.on( 'connection', function( socket ) {
     test++;
     pg.connect(connect_db, function(err, client){
       console.log("share table list");
+
+      client.query("SHOW max_connections;",function(err,info){
+        console.log(info);
+      });
+
       //エラー処理
       client.on('error', function(error) {
         console.log("error event stat...");
