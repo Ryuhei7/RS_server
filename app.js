@@ -52,26 +52,28 @@ var connect_db = "postgres://yugnpicjkinvfl:OurBFpqG6zgJnxuuTflaqo5FHN@ec2-54-16
 
 // 接続確立後の通信処理部分を定義
 io.sockets.on( 'connection', function( socket ) {
-  console.log("connect server");
-  //pg.connect(connect_db,function(err,client){
-  //console.log("connect DB");
+  console.log("Connect Server");
 
-  // クライアントからサーバーへ メッセージ送信ハンドラ（自分を含む全員宛に送る）
-  //Socket.IO Test
-  socket.on( 'test', function( data ) {
-    id = socket.id;
-    pg.connect(connect_db, function(err, client){
+  //DBへの接続
+  pg.connect(connect_db,function(err,client){
+    console.log("Connect DB");
+
+    // クライアントからサーバーへ メッセージ送信ハンドラ（自分を含む全員宛に送る）
+    //Socket.IO Test
+    socket.on( 'test', function( data ) {
+      id = socket.id;
+
       // サーバーからクライアントへ メッセージを送り返し
       io.sockets.to(id).emit( 'test_back', data );
       //console.log(datta.value);
       console.log(data);
+
     });
-  });
 
 
-  //QRCode Maker
-  socket.on( 'qrcodemaker', function( source ) {
-    pg.connect(connect_db, function(err, client){
+    //QRCode Maker
+    socket.on( 'qrcodemaker', function( source ) {
+
       data = source.shopid + "," + source.tableid + '\n';
       // /csv/ShopList.csv に保存
       fs.appendFile(__dirname + "/csv/ShopList.csv", data , 'utf-8', function(err){
@@ -83,14 +85,14 @@ io.sockets.on( 'connection', function( socket ) {
         io.sockets.emit( 'qrcodemaker_res', "complete" );
       });
       console.log(data);
+
     });
-  });
 
 
-  //ShareTable List
-  //ShareTableList に新しくテーブルを追加
-  socket.on( 'sharetable_start', function( source ) {
-    pg.connect(connect_db, function(err, client){
+    //ShareTable List
+    //ShareTableList に新しくテーブルを追加
+    socket.on( 'sharetable_start', function( source ) {
+
 
       console.log("recieved sharetable_start");
 
@@ -109,18 +111,18 @@ io.sockets.on( 'connection', function( socket ) {
           id  = socket.id;
           io.sockets.to(id).emit('sharetable_start_back', share_max);
         });
+
     });
-  });
 
 
-  //ShareTableList の一覧を出力
-  socket.on( 'sharetable_list', function(data) {
-    var y = data.location_y;
-    var x = data.location_x;
+    //ShareTableList の一覧を出力
+    socket.on( 'sharetable_list', function(data) {
+      var y = data.location_y;
+      var x = data.location_x;
 
-    console.log(x);
-    console.log(y);
-    pg.connect(connect_db, function(err, client){
+      console.log(x);
+      console.log(y);
+
       if(err){
         console.log(err);
       } else {
@@ -302,12 +304,12 @@ io.sockets.on( 'connection', function( socket ) {
           });
         }else{}
       }
-    });
-  });
 
-  //クライアントでリストのどれかを選ばれたときに詳細を渡す
-  socket.on('detail',function (id){
-    pg.connect(connect_db, function(err, client){
+    });
+
+    //クライアントでリストのどれかを選ばれたときに詳細を渡す
+    socket.on('detail',function (id){
+
       console.log("受信");
       var infoback = new Object();
       var get_detail = "select * from events where share_id = "+id+";"
@@ -338,12 +340,12 @@ io.sockets.on( 'connection', function( socket ) {
           });
         });
       });
-    });
-  });
 
-  //ゲストが参加ボタンをおしてからホストへ情報を送るまで
-  socket.on('decide',function(data){
-    pg.connect(connect_db, function(err, client){
+    });
+
+    //ゲストが参加ボタンをおしてからホストへ情報を送るまで
+    socket.on('decide',function(data){
+
       var getuser= "select user_id,name,hyoka from users where user_id =2;"
       client.query(getuser,function(err,result){
         console.log(data[0]);
@@ -359,29 +361,29 @@ io.sockets.on( 'connection', function( socket ) {
           var inguest = "update events set g_user_id = "+result.rows[0].user_id+" where shere_id = "+data[0]+";"
         });
       });
-    });
-  });
 
-  //ホストからキャンセルの0か、許可の1を受け取ってそれをゲストユーザーへ返す
-  socket.on('answer',function(data){
-    id = socket.id;
-    pg.connect(connect_db, function(err, client){
+    });
+
+    //ホストからキャンセルの0か、許可の1を受け取ってそれをゲストユーザーへ返す
+    socket.on('answer',function(data){
+      id = socket.id;
+
       console.log("success");
       io.sockets.emit('answer_back',data)
-    });
-  });
 
-  //ゲストがお店にQRでチェックインしたときに1を受け取りそれをホスト側へ送る
-  socket.on('gcheck',function(data){
-    id = socket.id;
-    pg.connect(connect_db, function(err, client){
+    });
+
+    //ゲストがお店にQRでチェックインしたときに1を受け取りそれをホスト側へ送る
+    socket.on('gcheck',function(data){
+      id = socket.id;
+
       console.log("success");
       io.sockets.emit('gcheck_back',data)
-    });
-  });
 
-  socket.on('hyokauser',function(data){
-    pg.connect(connect_db, function(err, client){
+    });
+
+    socket.on('hyokauser',function(data){
+
       console.log(data);
       var uid = "select h_user_id, g_user_id from events where share_id = "+data+";"
       client.query(uid,function(data2){
@@ -390,14 +392,14 @@ io.sockets.on( 'connection', function( socket ) {
         arr[1]=data2.rows[0].g_user_id;
         socket.to(socket.id).emit(hyokauser_back, arr);
       });
+
     });
-  });
 
 
 
-  //最後の評価
-  socket.on('sethyoka',function(data){
-    pg.connect(connect_db, function(err, client){
+    //最後の評価
+    socket.on('sethyoka',function(data){
+
       var gethyoka = "select hyoka_sum, hyoka_times from users where user_id= "+data.recieveuserid+";"
       console.log(data.nowhyoka);
       console.log(data.recieveuserid);
@@ -415,11 +417,11 @@ io.sockets.on( 'connection', function( socket ) {
         //io.sockets.to(id).emit("end","success");
         console.log("success");
       });
-    });
-  });
 
-  socket.on('menu_request',function(data){
-    pg.connect(connect_db,function(err,client){
+    });
+
+    socket.on('menu_request',function(data){
+
       var menu = "select * from items where shop_id = 1;"
       client.query(menu,function(err, data){
         var array = new Array();
@@ -434,11 +436,11 @@ io.sockets.on( 'connection', function( socket ) {
         }
         socket.emit('menu_list',array);
       });
-    });
-  });
 
-  socket.on('newuser',function(data){
-    pg.connect(connect_db,function(err,client){
+    });
+
+    socket.on('newuser',function(data){
+
       var gmax = "select user_id from users;"
       client.query(gmax,function(err, data2){
         var max = parseInt(data2.rows.length)+1;
@@ -448,11 +450,11 @@ io.sockets.on( 'connection', function( socket ) {
         var nu = socket.id;
         io.sockets.to(nu).emit("newuser_back",max);
       });
-    });
-  });
 
-  socket.on('load',function(data){
-    pg.connect(connect_db,function(err,client){
+    });
+
+    socket.on('load',function(data){
+
       console.log(data);
       var check = "select scheck,share_id from events where scheck = 0 and (h_user_id = "+data+" or g_user_id = "+data+");"
       client.query(check,function(err, data2){
@@ -472,13 +474,14 @@ io.sockets.on( 'connection', function( socket ) {
           io.sockets.to(load2).emit("load_back",sc2);
         }
       });
+
     });
+
+    //チャット
+    socket.on('chat_send',function(data){
+      socket.broadcast.emit('chat_reception',data);
+    });
+
   });
-
-  socket.on('chat_send',function(data){
-    socket.broadcast.emit('chat_reception',data);
-  });
-
-
 });
 
