@@ -159,7 +159,6 @@ io.sockets.on( 'connection', function( socket ) {
               io.sockets.to(id).emit('sharetable_list_back', arraylist);
             });
           });
-          pg.end();
         }else if(data.refine==1){
           var table_info = "select share_id, title, category_id, explain from events where category_id = "+data.category_id+";"
           var shop_info = "select shop_name from shops;"
@@ -480,6 +479,12 @@ io.sockets.on( 'connection', function( socket ) {
     //チャット
     socket.on('chat_send',function(data){
       socket.broadcast.emit('chat_reception',data);
+    });
+
+    //通信切断時にDBからも切断
+    socket.on('disconnect',function(){
+      pg.end();
+      console.log("Disconnect");
     });
 
   });
